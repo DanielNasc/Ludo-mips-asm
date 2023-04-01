@@ -1,10 +1,11 @@
 .data
 	msg:	.asciiz	"\nHello, Ludo!\n"
 .text
+.globl main
 main:
-	li	$v0,	4	# code: print
-	la	$a0,	msg	# put msg address on a0
+	jal	roll_die
+	li	$v0,	1
 	syscall
 	
-	li	$v0,	10	# code: finish
+	li	$v0,	10
 	syscall
