@@ -2,7 +2,7 @@
 .globl roll_die
 .globl update_pos
     	roll_die:				# gen numbers in range [0,6]
-      		li 	$a1,	7		# upper bound of random number
+      		li 	$a1,	6		# upper bound of random number
       		li	$v0,	42		# 42 -> code for "random int range"
 	      	syscall
       	

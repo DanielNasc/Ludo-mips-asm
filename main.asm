@@ -6,10 +6,10 @@
 	.globl main
 	main:
 		# 256 x 128 cells (2x2 pixels)
-		li	$a0,	128	# x = 128
-		li	$a1,	64	# width = 64
+		li	$a0,	128
+		li	$a1,	64	# x = 64
 		li	$a2,	64	# y = 32
-		li	$a3,	32	# height = 32
+		li	$a3,	16	# height = 32
 		jal	rect
 	
 		jal	roll_die

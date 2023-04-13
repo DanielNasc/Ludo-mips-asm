@@ -10,10 +10,12 @@
 		# a2 = coord y
 		# a3 = height
 		
+		subi	$sp,	$sp,	4
+		sw	$ra,	($sp)
 		
 		la	$t0,	frameBuffer
-		li	$t1,	0x400		# 512 pixels per row * 2 rows per cell
-		li	$t2,	0x00FF0000	# red
+		li	$t1,	0x400	
+		li	$t2,	0xFF002F	# red
 		li	$t4,	0
 		
 		move	$t0,	$gp
@@ -22,7 +24,7 @@
 		sll	$a1,	$a1,	2
 		
 		# convert y in pixels::	y << 10
-		# y * 2^8 (256 cells per row) * 2^2 (addresses by pixel)
+		# y * 2^8 (256 pixels per row) * 2^2 (addresses by pixel)
 		sll	$a2,	$a2,	10
 		sll	$a3,	$a3,	10	# convert height in pixels::
 
@@ -37,7 +39,7 @@
 		addi	$t3,	$t3,	4	# next pixel
 		blt	$t3,	$t4, walk_x	# if t3 didnt reach the x limit yet, go to next iteration
 	walk_y:
-		bge	$t3,	$t5,	end
+		bge	$t3,	$t5,	end_rect
 		
 		add	$t4,	$t4,	$t1	# update x limit
 		
@@ -46,6 +48,9 @@
 		
 		j	walk_x
 		
-	end:
-		li	$v0,	10
-		syscall
+	end_rect:
+		lw	$ra,	($sp)
+		addi	$sp,	$sp,	4
+	
+		jr	$ra
+	
