@@ -3,7 +3,7 @@
 	create_pieces:
 				
 		# Each piece contains the following information:
-
+	
 		#   * `coords` - the coordinates of the piece
 		#   * `team` - the team the piece belongs to
 		#   * `status` - the status of the piece
@@ -12,6 +12,7 @@
 		#     - `in reserve` - the piece is in reserve
 		#     - `in victory zone` - the piece is in the victory zone
 		#     - `in goal` - the piece is in the goal
+		#	
 		
 		# As the game board is a 128x128 matrix, X and Y can be represented by a number between 0 and 127 (0 - 0x7F).
 		# The `team` is represented by a number between 0 and 3 (0 - 0x03) or 2 bits.
