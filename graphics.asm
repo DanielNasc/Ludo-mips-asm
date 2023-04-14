@@ -131,9 +131,28 @@
 		
 		lw	$ra,	($sp)
 		addi	$sp,	$sp,	12
-		jr	$ra		
-
-	.globl board
+		jr	$ra	
+			
+	.globl 	piece
+	piece:
+		subi	$sp,	$sp, 	8
+		sw	$ra,	($sp)
+		sw	$a0,	4($sp)
+		sw	$a1,	8($sp)
+		
+		addi	$a1,	$a1,	0x0202	# y += 2, x += 2;
+		
+		li	$a2,	3		# width
+		li	$a3,	3		# height = 32
+		jal	rect
+		
+	
+		lw	$ra,	($sp)
+		addi	$sp,	$sp,	12
+		jr	$ra
+			
+	
+	.globl 	board
 	board:
 		subi	$sp,	$sp,	4
 		sw	$ra,	($sp)
