@@ -72,18 +72,20 @@
 		
 		jr	$ra 
 		
+
 	.globl cell
 	cell:
-		subi	$sp,	$sp,	8
+		subi	$sp,	$sp,	12
 		sw	$ra,	($sp)
 		sw	$a1,	4($sp)
+		sw	$a0,	8($sp)
 	
 		li	$a0,	0x111426	# dark color
 		li	$a2,	7		# width
 		li	$a3,	7		# height = 32
 		jal	rect
 		
-		li	$a0,	0xF4FBF8	# white color
+		lw	$a0,	8($sp)
 		addi 	$a1,	$a1,	0x101
 		li	$a2,	5		# width
 		li	$a3,	5		# height = 32
@@ -91,7 +93,7 @@
 		
 		lw	$ra,	($sp)
 		lw	$a1,	4($sp)
-		addi	$sp,	$sp, 8
+		addi	$sp,	$sp, 12
 		
 		jr	$ra 
 		
@@ -137,6 +139,7 @@
 		sw	$ra,	($sp)
 		
 		# first cell
+		li	$a0,	0xF4FBF8	# white color
 		li 	$a1,	0x3703
 		jal 	cell
 		
@@ -240,6 +243,62 @@
 		li	$a2,	1
 		li	$a3,	0x0700
 		jal 	loop_sub
+		
+		# creating blue cells
+		li	$a0,	0x5A77B9	# blue color
+		
+		addi	$a1,	$a1,	0x0700
+		
+		li	$a2,	1
+		li	$a3,	0x0007
+		jal 	loop_add
+		
+		subi	$a1,	$a1,	0x0707
+		
+		li	$a2,	5
+		li	$a3,	0x0007
+		jal 	loop_add
+		
+		# creating orange cells
+		li	$a0,	0xE8931F	# orange color
+		
+		addi	$a1,	$a1,	0x0015	# pula 3 casas para a direita (eixo x)
+		
+		li	$a2,	5
+		li	$a3,	0x0007
+		jal 	loop_add
+		
+		subi	$a1,	$a1,	0x0707
+		
+		li	$a2,	1
+		li	$a3,	0x0007
+		jal 	loop_add
+		
+		# creating pink cells
+		li	$a0,	0xF84284	# pink color
+		
+		subi	$a1,	$a1,	0x2338	# sobe 5 casas para cima(eixo y) e 8 casas para a esquerda (eixo x)
+		
+		li	$a2,	2
+		li	$a3,	0x0007
+		jal 	loop_add
+		
+		li	$a2,	4
+		li	$a3,	0x0700
+		jal 	loop_add
+		
+		# creating purple cells
+		li	$a0,	0xA467C3	# purple color
+		
+		addi	$a1,	$a1,	0x1500	# sobe 5 casas para cima(eixo y) e 8 casas para a esquerda (eixo x)
+		
+		li	$a2,	5
+		li	$a3,	0x0700
+		jal 	loop_add
+		
+		li	$a2,	1
+		li	$a3,	0x0007
+		jal 	loop_add
 		
 		lw	$ra,	($sp)
 		addi	$sp,	$sp, 4
