@@ -5,10 +5,9 @@
 .text
 	.globl main
 	main:
-		jal 	create_pieces
-	
 		# 256 x 128 cells (2x2 pixels)
-		jal poker_face
+		jal background
+		jal board
 	
 		jal	roll_die
 		li	$v0,	1
