@@ -143,15 +143,84 @@
 		addi	$a1,	$a1,	0x0202	# y += 2, x += 2;
 		
 		li	$a2,	3		# width
-		li	$a3,	3		# height = 32
+		li	$a3,	3		# height
 		jal	rect
 		
 	
 		lw	$ra,	($sp)
-		addi	$sp,	$sp,	12
+		addi	$sp,	$sp,	8
 		jr	$ra
 			
-	
+	.globl 	crosspiece
+	crosspiece:
+		subi	$sp,	$sp, 	4
+		sw	$ra,	($sp)
+		sw	$a1,	4($sp)
+		
+		addi	$a1,	$a1,	0x0203	# y += 2, x += 2;
+		
+		li	$a0,	0x111426	# dark color
+		li	$a2,	1		# width
+		li	$a3,	3		# height 
+		jal	rect
+		
+		addi	$a1,	$a1,	0x0100	# y += 1;
+		subi	$a1,	$a1,	0x0001	# x -= 1;
+		
+		li	$a2,	3		# width
+		li	$a3,	1		# height 
+		jal	rect
+		
+		lw	$ra,	($sp)
+		lw	$a1,	4($sp)
+		addi	$sp,	$sp,	4
+		jr	$ra
+		
+	.globl	create_crosspieces
+	create_crosspieces:
+		subi	$sp,	$sp, 	4
+		sw	$ra,	($sp)
+		sw	$a1,	4($sp)
+		
+		# cross 1
+		li 	$a1,	0x3718
+		jal crosspiece
+		
+		# cross 2
+		addi	$a1,	$a1,	0x0015
+		subi	$a1,	$a1,	0x2300
+		jal crosspiece
+		
+		# cross 3
+		addi	$a1,	$a1,	0x0E0E
+		jal crosspiece
+		
+		# cross 4
+		addi	$a1,	$a1,	0x1523
+		jal crosspiece
+		
+		# cross 5
+		addi	$a1,	$a1,	0x0E00
+		subi	$a1,	$a1,	0x000E
+		jal crosspiece
+		
+		# cross 6
+		addi	$a1,	$a1,	0x2300
+		subi	$a1,	$a1,	0x0015
+		jal crosspiece
+		
+		# cross 7
+		subi	$a1,	$a1,	0x0E0E
+		jal crosspiece
+		
+		# cross 8
+		subi	$a1,	$a1,	0x1523
+		jal crosspiece
+		
+		lw	$ra,	($sp)
+		addi	$sp,	$sp,	4
+		jr	$ra
+		
 	.globl 	board
 	board:
 		subi	$sp,	$sp,	4

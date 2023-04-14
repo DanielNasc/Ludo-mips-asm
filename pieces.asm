@@ -23,7 +23,7 @@
 
 		#     * 7 bits for X coordinate -> 128 possible values between 0 and 127
 		#     * 7 bits for Y coordinate -> 128 possible values between 0 and 127
-		#     * 2 bits for team -> 4 possible values between 0 and    
+		#     * 2 bits for team -> 4 possible values between 0 and 3 
 		#     * 3 bits for status -> 8 possible values between 0 and 7
 		#     * 13 bits unused -> 8192 possible values between 0 and 8191
 	

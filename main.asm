@@ -10,9 +10,11 @@
 		jal board
 		
 		# How to create a piece
-		li $a0,	0x1C2153	# Dark Blue 2
-		li $a1,	0x3703		# cell coordenate
+		li 	$a0,	0x1C2153	# Dark Blue 2
+		li 	$a1,	0x3703		# cell coordenate
 		jal piece
+		
+		jal create_crosspieces
 	
 		jal	roll_die
 		li	$v0,	1
