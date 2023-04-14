@@ -13,7 +13,9 @@
 		subi	$sp,	$sp,	4
 		sw	$ra,	($sp)
 		
-		li	$t1,	0x400	# addresses per row (256 pixels -> 1024 addresses)
+		#la	$t0,	frameBuffer
+		li	$t0,	0x10000000
+		li	$t1,	0x200	# addresses per row (128 pixels -> 512 addresses)
 		
 		andi	$t6,	$a1,	0xFF	# x
 		srl	$t7,	$a1,	8	# y
@@ -23,10 +25,10 @@
 		
 		# convert y in pixels::	y << 10
 		# y * 2^8 (256 pixels per row) * 2^2 (addresses by pixel)
-		sll	$t7,	$t7,	10
-		sll	$a3,	$a3,	10	# convert height in pixels
+		sll	$t7,	$t7,	9
+		sll	$a3,	$a3,	9	# convert height in pixels
 
-		add	$t3,	$gp,	$t6	# move to x coord
+		add	$t3,	$t0,	$t6	# move to x coord
 		add	$t3,	$t3,	$t7	# move y coord
 		
 		add	$t4,	$a2,	$t3	# x limit on first iteration
@@ -58,28 +60,10 @@
 		subi	$sp,	$sp,	4
 		sw	$ra,	($sp)
 	
-		li	$a0,	0xFFFFFF # color
-		li	$a1,	0x407F	# x = 128, y = 64
-		li	$a2,	64	# width
-		li	$a3,	64	# height = 32
-		jal	rect
-		
-		li	$a0,	0	 # color
-		li	$a1,	0x5090
-		li	$a2,	3	# width
-		li	$a3,	7	# height = 32
-		jal	rect
-		
-		li	$a0,	0	 # color
-		li	$a1,	0x509E
-		li	$a2,	3	# width
-		li	$a3,	7	# height = 32
-		jal	rect
-		
-		li	$a0,	0	 # color
-		li	$a1,	0x6090
-		li	$a2,	32	# width
-		li	$a3,	2	# height = 32
+		li	$a0,	0xF4FBF8 # color  	
+		li	$a1,	0	# x = 128, y = 64
+		li	$a2,	128	# width
+		li	$a3,	128	# height = 32
 		jal	rect
 		
 		lw	$ra,	($sp)
