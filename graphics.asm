@@ -485,7 +485,7 @@
 		jal	draw_dice_number
 		
 		lw	$ra,	($sp)
-		addi	$sp,	$sp,	8
+		addi	$sp,	$sp,	12
 		jr	$ra
 		
 		
