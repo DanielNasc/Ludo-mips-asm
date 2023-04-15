@@ -5,7 +5,8 @@
       		li 	$a1,	6		# upper bound of random number
       		li	$v0,	42		# 42 -> code for "random int range"
 	      	syscall
-      	
+      		
+		addi	$a0,	$a0,	1
 	      	jr	$ra			# back from subroutine, $a0 = random int
 	      	
 	update_pos:				# 
