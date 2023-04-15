@@ -62,7 +62,7 @@
 		sw	$ra,	($sp)
 	
 		li	$a0,	0xF4FBF8 # white color 	
-		li	$a1,	0	# x = 128, y = 64
+		li	$a1,	0	# x = 0, y = 0
 		li	$a2,	128	# width
 		li	$a3,	128	# height = 32
 		jal	rect
@@ -135,7 +135,7 @@
 			
 	.globl 	piece
 	piece:
-		subi	$sp,	$sp, 	8
+		subi	$sp,	$sp, 	12
 		sw	$ra,	($sp)
 		sw	$a0,	4($sp)
 		sw	$a1,	8($sp)
@@ -148,12 +148,12 @@
 		
 	
 		lw	$ra,	($sp)
-		addi	$sp,	$sp,	8
+		addi	$sp,	$sp,	12
 		jr	$ra
 			
 	.globl 	crosspiece
 	crosspiece:
-		subi	$sp,	$sp, 	4
+		subi	$sp,	$sp, 	8
 		sw	$ra,	($sp)
 		sw	$a1,	4($sp)
 		
@@ -173,53 +173,321 @@
 		
 		lw	$ra,	($sp)
 		lw	$a1,	4($sp)
-		addi	$sp,	$sp,	4
+		addi	$sp,	$sp,	8
 		jr	$ra
 		
 	.globl	create_crosspieces
 	create_crosspieces:
-		subi	$sp,	$sp, 	4
+		subi	$sp,	$sp, 	8
 		sw	$ra,	($sp)
 		sw	$a1,	4($sp)
 		
 		# cross 1
 		li 	$a1,	0x3718
-		jal crosspiece
+		jal 	crosspiece
 		
 		# cross 2
 		addi	$a1,	$a1,	0x0015
 		subi	$a1,	$a1,	0x2300
-		jal crosspiece
+		jal 	crosspiece
 		
 		# cross 3
 		addi	$a1,	$a1,	0x0E0E
-		jal crosspiece
+		jal 	crosspiece
 		
 		# cross 4
 		addi	$a1,	$a1,	0x1523
-		jal crosspiece
+		jal 	crosspiece
 		
 		# cross 5
 		addi	$a1,	$a1,	0x0E00
 		subi	$a1,	$a1,	0x000E
-		jal crosspiece
+		jal 	crosspiece
 		
 		# cross 6
 		addi	$a1,	$a1,	0x2300
 		subi	$a1,	$a1,	0x0015
-		jal crosspiece
+		jal 	crosspiece
 		
 		# cross 7
 		subi	$a1,	$a1,	0x0E0E
-		jal crosspiece
+		jal 	crosspiece
 		
 		# cross 8
 		subi	$a1,	$a1,	0x1523
-		jal crosspiece
+		jal 	crosspiece
 		
 		lw	$ra,	($sp)
-		addi	$sp,	$sp,	4
+		addi	$sp,	$sp,	8
 		jr	$ra
+	
+	
+	draw_one:
+	# draws the dice with only 1 rectangle
+		subi	$sp,	$sp,	12
+		sw	$ra,	($sp)
+		sw	$a0,	4($sp)
+		sw	$a1,	8($sp)
+		
+		addi	$a1,	$a1,	0x0404	
+		li	$a0,	0x111426	# dark color
+		li	$a2,	1
+		li	$a3,	1
+		jal 	rect
+		
+		sw	$a0,	4($sp)
+		sub	$a0,	$a0,	$a0
+		
+		lw	$ra,	($sp)
+		lw	$a0,	4($sp)
+		addi	$sp,	$sp,	12
+		jr	$ra
+		
+	draw_two:
+	# draws the dice with 2 rectangles
+		subi	$sp,	$sp,	12
+		sw	$ra,	($sp)
+		sw	$a0,	4($sp)
+		sw	$a1,	8($sp)
+		
+		addi	$a1,	$a1,	0x0101
+		li	$a0,	0x111426
+		li	$a2,	1
+		li	$a3,	1
+		jal 	rect
+		
+		addi	$a1,	$a1,	0x0606
+		li	$a0,	0x111426
+		li	$a2,	1
+		li	$a3,	1
+		jal 	rect
+		
+		sw	$a0,	4($sp)
+		sub	$a0,	$a0,	$a0
+		
+		lw	$ra,	($sp)
+		lw	$a0,	4($sp)
+		addi	$sp,	$sp,	12
+		jr	$ra
+	
+	draw_three:
+	# draws the dice with 3 rectangles
+		subi	$sp,	$sp,	12
+		sw	$ra,	($sp)
+		sw	$a0,	4($sp)
+		sw	$a1,	8($sp)
+		
+		addi	$a1,	$a1,	0x0101
+		li	$a0,	0x111426
+		li	$a2,	1
+		li	$a3,	1
+		jal 	rect
+		
+		addi	$a1,	$a1,	0x0303
+		li	$a0,	0x111426
+		li	$a2,	1
+		li	$a3,	1
+		jal 	rect
+		
+		addi	$a1,	$a1,	0x0303
+		li	$a0,	0x111426
+		li	$a2,	1
+		li	$a3,	1
+		jal 	rect
+		
+		sw	$a0,	4($sp)
+		sub	$a0,	$a0,	$a0
+		
+		lw	$ra,	($sp)
+		lw	$a0,	4($sp)
+		addi	$sp,	$sp,	12
+		jr	$ra
+	
+	draw_four:
+	# draws the dice with 4 rectangles
+		subi	$sp,	$sp,	12
+		sw	$ra,	($sp)
+		sw	$a0,	4($sp)
+		sw	$a1,	8($sp)
+		
+		addi	$a1,	$a1,	0x0101
+		li	$a0,	0x111426
+		li	$a2,	1
+		li	$a3,	1
+		jal 	rect
+		
+		addi	$a1,	$a1,	0x0006
+		li	$a0,	0x111426
+		li	$a2,	1
+		li	$a3,	1
+		jal 	rect
+		
+		addi	$a1,	$a1,	0x0600
+		li	$a0,	0x111426
+		li	$a2,	1
+		li	$a3,	1
+		jal 	rect
+		
+		subi	$a1,	$a1,	0x0006
+		li	$a0,	0x111426
+		li	$a2,	1
+		li	$a3,	1
+		jal 	rect
+		
+		sw	$a0,	4($sp)
+		sub	$a0,	$a0,	$a0
+		
+		lw	$ra,	($sp)
+		lw	$a0,	4($sp)
+		addi	$sp,	$sp,	12
+		jr	$ra
+	
+	draw_five:
+	# draws the dice with 5 rectangles
+		subi	$sp,	$sp,	12
+		sw	$ra,	($sp)
+		sw	$a0,	4($sp)
+		sw	$a1,	8($sp)
+		
+		addi	$a1,	$a1,	0x0101
+		li	$a0,	0x111426
+		li	$a2,	1
+		li	$a3,	1
+		jal 	rect
+		
+		addi	$a1,	$a1,	0x0006
+		li	$a0,	0x111426
+		li	$a2,	1
+		li	$a3,	1
+		jal 	rect
+		
+		addi	$a1,	$a1,	0x0600
+		li	$a0,	0x111426
+		li	$a2,	1
+		li	$a3,	1
+		jal 	rect
+		
+		subi	$a1,	$a1,	0x0006
+		li	$a0,	0x111426
+		li	$a2,	1
+		li	$a3,	1
+		jal 	rect
+		
+		subi	$a1,	$a1,	0x0300
+		addi	$a1,	$a1,	0x0003
+		li	$a0,	0x111426
+		li	$a2,	1
+		li	$a3,	1
+		jal 	rect
+		
+		sw	$a0,	4($sp)
+		sub	$a0,	$a0,	$a0
+		
+		lw	$ra,	($sp)
+		lw	$a0,	4($sp)
+		addi	$sp,	$sp,	12
+		jr	$ra
+		
+	draw_six:
+	# draws the dice with 6 rectangles
+		subi	$sp,	$sp,	12
+		sw	$ra,	($sp)
+		sw	$a0,	4($sp)
+		sw	$a1,	8($sp)
+		
+		addi	$a1,	$a1,	0x0101
+		li	$a0,	0x111426
+		li	$a2,	1
+		li	$a3,	1
+		jal 	rect
+		
+		addi	$a1,	$a1,	0x0006
+		li	$a0,	0x111426
+		li	$a2,	1
+		li	$a3,	1
+		jal 	rect
+		
+		addi	$a1,	$a1,	0x0300
+		li	$a0,	0x111426
+		li	$a2,	1
+		li	$a3,	1
+		jal 	rect
+		
+		addi	$a1,	$a1,	0x0300
+		li	$a0,	0x111426
+		li	$a2,	1
+		li	$a3,	1
+		jal 	rect
+		
+		subi	$a1,	$a1,	0x0006
+		li	$a0,	0x111426
+		li	$a2,	1
+		li	$a3,	1
+		jal 	rect
+		
+		subi	$a1,	$a1,	0x0300
+		li	$a0,	0x111426
+		li	$a2,	1
+		li	$a3,	1
+		jal 	rect
+		
+		sw	$a0,	4($sp)
+		sub	$a0,	$a0,	$a0	# subtract $a0 from itself to result in 0
+		
+		lw	$ra,	($sp)
+		lw	$a0,	4($sp)
+		addi	$sp,	$sp,	12
+		jr	$ra
+		
+	draw_dice_number:
+		subi	$sp,	$sp,	12
+		sw	$ra,	($sp)
+		sw	$a0,	4($sp)
+		sw	$a1,	8($sp)
+		
+		# checks which number is drawn and calls the function to draw it
+		beq	$a0,	1,	draw_one
+		beq	$a0,	2,	draw_two
+		beq	$a0,	3,	draw_three
+		beq	$a0,	4,	draw_four
+		beq	$a0,	5,	draw_five
+		beq	$a0,	6,	draw_six
+		
+
+		lw	$ra,	($sp)
+		addi	$sp,	$sp,	12
+		jr	$ra
+		
+	.globl dice
+	dice:
+		subi	$sp,	$sp,	8
+		sw	$ra,	($sp)
+		
+		# dice contour
+		li	$a0,	0x111426
+		li	$a1,	0x3c70
+		li	$a2,	11
+		li	$a3,	11
+		jal 	rect
+		
+		# dice white rectangle
+		li	$a0,	0xF4FBF8
+		addi	$a1,	$a1,	0x0101
+		li	$a2,	9
+		li	$a3,	9
+		jal 	rect
+		
+		sw	$a1,	4($sp)	# save the coordinates of $a1
+		
+		jal 	roll_die
+		
+		lw	$a1,	4($sp)	# returns the coordinates of $a1
+		jal	draw_dice_number
+		
+		lw	$ra,	($sp)
+		addi	$sp,	$sp,	8
+		jr	$ra
+		
 		
 	.globl 	board
 	board:
