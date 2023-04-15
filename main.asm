@@ -8,6 +8,10 @@
 		# 256 x 128 cells (2x2 pixels)
 		jal background
 		jal board
+
+		jal		init_cells
+		jal 	create_pieces
+	
 		
 		# How to create a piece
 		li 	$a0,	0x1C2153	# Dark Blue 2
