@@ -83,13 +83,13 @@
 	
 		li	$a0,	0x111426	# dark color
 		li	$a2,	7		# width
-		li	$a3,	7		# height = 32
+		li	$a3,	7		# height
 		jal	rect
 		
 		lw	$a0,	8($sp)
 		addi 	$a1,	$a1,	0x101
 		li	$a2,	5		# width
-		li	$a3,	5		# height = 32
+		li	$a3,	5		# height
 		jal	rect
 		
 		lw	$ra,	($sp)
@@ -158,18 +158,18 @@
 		sw	$ra,	($sp)
 		sw	$a1,	4($sp)
 		
-		addi	$a1,	$a1,	0x0203	# y += 2, x += 2;
+		addi	$a1,	$a1,	0x0304	# y += 2, x += 2;
 		
 		li	$a0,	0x111426	# dark color
-		li	$a2,	1		# width
-		li	$a3,	3		# height 
+		li	$a2,	0		# width
+		li	$a3,	2		# height 
 		jal	rect
 		
 		addi	$a1,	$a1,	0x0100	# y += 1;
 		subi	$a1,	$a1,	0x0001	# x -= 1;
 		
-		li	$a2,	3		# width
-		li	$a3,	1		# height 
+		li	$a2,	2		# width
+		li	$a3,	0		# height 
 		jal	rect
 		
 		lw	$ra,	($sp)
@@ -459,7 +459,7 @@
 		addi	$sp,	$sp,	12
 		jr	$ra
 		
-	.globl dice
+	.globl 	dice
 	dice:
 		subi	$sp,	$sp,	8
 		sw	$ra,	($sp)
@@ -489,6 +489,34 @@
 		addi	$sp,	$sp,	12
 		jr	$ra
 		
+	.globl entry_index
+	entry_index:
+	# draws the arrow that indicates the entry into the victory zone.
+		subi	$sp,	$sp,	4
+		sw	$ra,	($sp)
+		
+		# drawing the purple time entry index.
+		li	$a0,	0xA467C3	# purple color.
+		li	$a1,	0x3703		# based on the coordinates of the first pixel used to draw the board.
+		addi	$a1,	$a1,	0x3542
+		
+		li	$a2,	0
+		li	$a3,	0
+		jal	rect
+		
+		addi	$a1,	$a1,	0x0001
+		subi	$a1, 	$a1,	0x0100
+		li	$a3,	2
+		jal	rect
+		
+		addi	$a1,	$a1,	0x0001
+		subi	$a1, 	$a1,	0x0100
+		li	$a3,	4
+		jal	rect
+		
+		lw	$ra,	($sp)
+		addi	$sp,	$sp,	4
+		jr	$ra
 		
 	.globl 	board
 	board:
@@ -656,6 +684,8 @@
 		li	$a2,	1
 		li	$a3,	0x0007
 		jal 	loop_add
+		
+		jal	 entry_index
 		
 		lw	$ra,	($sp)
 		addi	$sp,	$sp, 4
