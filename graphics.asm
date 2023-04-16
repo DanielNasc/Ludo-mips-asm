@@ -623,7 +623,7 @@
 		subi	$sp,	$sp,	4
 		sw	$ra,	($sp)
 		
-		li	$a0,	0xE8931F	# pink color
+		li	$a0,	0xE8931F	# orange color
 		
 		lw	$ra,	($sp)
 		addi	$sp,	$sp,	4
@@ -696,6 +696,183 @@
 		li	$a0,	0xC72D1E	# dark orange color.
 		li	$a1,	0x0060
 		jal 	reserve_zone
+		
+		lw	$ra,	($sp)
+		addi	$sp,	$sp,	4
+		jr	$ra
+	
+	center_loop_add:
+		subi	$sp,	$sp,	8
+		sw	$ra,	($sp)
+		
+		li	$a0,	0x111426	# dark color
+		li	$a1,	0x3703		# based on the coordinates of the first pixel used to draw the board.
+		li	$t0,	24
+		
+		addi	$a1,	$a1,	0x0030
+		
+		loop_center_a:
+			sw	$t0,	4($sp)
+			addi	$a1,	$a1,	0x0101
+			li	$a2,	1
+			li	$a3,	1
+			jal	rect
+			lw	$t0,	4($sp)
+			subi	$t0,	$t0,	1
+			bgtz	$t0,	loop_center_a
+			
+		
+		lw	$ra,	($sp)
+		addi	$sp,	$sp,	8
+		jr	$ra
+		
+	center_loop_sub:
+		subi	$sp,	$sp,	8
+		sw	$ra,	($sp)
+		
+		li	$a0,	0x111426	# dark color
+		li	$a1,	0x3703		# based on the coordinates of the first pixel used to draw the board.
+		li	$t0,	24
+		
+		addi	$a1,	$a1,	0x0048
+		
+		loop_center_s:
+			sw	$t0,	4($sp)
+			addi	$a1,	$a1,	0x0100
+			subi	$a1,	$a1,	0x0001
+			li	$a2,	1
+			li	$a3,	1
+			jal	rect
+			lw	$t0,	4($sp)
+			subi	$t0,	$t0,	1
+			bgtz	$t0,	loop_center_s
+			
+		
+		lw	$ra,	($sp)
+		addi	$sp,	$sp,	8
+		jr	$ra
+	
+	center_loop_purple:
+		subi	$sp,	$sp,	12
+		sw	$ra,	($sp)
+		
+		li	$a0,	0xA467C3	# purple color
+		li	$a1,	0x3703		# based on the coordinates of the first pixel used to draw the board.
+		li	$a2,	21		# max triangle width size
+		li	$t0,	11		# counter
+		
+		addi	$a1,	$a1,	0x1831	# results in the initial coordinate used to draw the purple area in the center
+		
+		loop_center_pp:
+			sw	$t0,	4($sp)
+			sw	$a2,	8($sp)
+			subi	$a1,	$a1,	0x0100
+			addi	$a1,	$a1,	0x0001
+			li	$a3,	1
+			jal	rect
+			lw	$t0,	4($sp)
+			lw	$a2,	8($sp)
+			subi	$t0,	$t0,	1
+			subi	$a2,	$a2,	2
+			bgtz	$t0,	loop_center_pp
+			
+		lw	$ra,	($sp)
+		addi	$sp,	$sp,	12
+		jr	$ra
+	
+	center_loop_blue:
+		subi	$sp,	$sp,	12
+		sw	$ra,	($sp)
+		
+		li	$a0,	0x5A77B9	# blue color
+		li	$a1,	0x3703		# based on the coordinates of the first pixel used to draw the board.
+		li	$a3,	21		# max triangle height size
+		li	$t0,	11		# counter
+		
+		addi	$a1,	$a1,	0x0130	# results in the initial coordinate used to draw the purple area in the center
+		
+		loop_center_b:
+			sw	$t0,	4($sp)
+			sw	$a3,	8($sp)
+			addi	$a1,	$a1,	0x0101
+			li	$a2,	1
+			jal	rect
+			lw	$t0,	4($sp)
+			lw	$a3,	8($sp)
+			subi	$t0,	$t0,	1
+			subi	$a3,	$a3,	2
+			bgtz	$t0,	loop_center_b
+			
+		lw	$ra,	($sp)
+		addi	$sp,	$sp,	12
+		jr	$ra
+	
+	center_loop_pink:
+		subi	$sp,	$sp,	12
+		sw	$ra,	($sp)
+		
+		li	$a0,	0xF84284	# pink color
+		li	$a1,	0x3703		# based on the coordinates of the first pixel used to draw the board.
+		li	$a2,	21		# max triangle width size
+		li	$t0,	11		# counter
+		
+		addi	$a1,	$a1,	0x0031	# results in the initial coordinate used to draw the purple area in the center
+		
+		loop_center_pk:
+			sw	$t0,	4($sp)
+			sw	$a2,	8($sp)
+			addi	$a1,	$a1,	0x0101
+			li	$a3,	1
+			jal	rect
+			lw	$t0,	4($sp)
+			lw	$a2,	8($sp)
+			subi	$t0,	$t0,	1
+			subi	$a2,	$a2,	2
+			bgtz	$t0,	loop_center_pk
+			
+		lw	$ra,	($sp)
+		addi	$sp,	$sp,	12
+		jr	$ra
+	
+	center_loop_orange:
+		subi	$sp,	$sp,	12
+		sw	$ra,	($sp)
+		
+		li	$a0,	0xE8931F	# orange color
+		li	$a1,	0x3703		# based on the coordinates of the first pixel used to draw the board.
+		li	$a3,	21		# max triangle height size
+		li	$t0,	11		# counter
+		
+		addi	$a1,	$a1,	0x0148	# results in the initial coordinate used to draw the purple area in the center
+		
+		loop_center_o:
+			sw	$t0,	4($sp)
+			sw	$a3,	8($sp)
+			addi	$a1,	$a1,	0x0100
+			subi	$a1,	$a1,	0x0001
+			li	$a2,	1
+			jal	rect
+			lw	$t0,	4($sp)
+			lw	$a3,	8($sp)
+			subi	$t0,	$t0,	1
+			subi	$a3,	$a3,	2
+			bgtz	$t0,	loop_center_o
+			
+		lw	$ra,	($sp)
+		addi	$sp,	$sp,	12
+		jr	$ra
+			
+	.globl	center_board
+	center_board:
+		subi	$sp,	$sp,	4
+		sw	$ra,	($sp)
+		
+		jal	center_loop_add
+		jal	center_loop_sub
+		jal	center_loop_purple
+		jal	center_loop_blue
+		jal	center_loop_pink
+		jal	center_loop_orange
 		
 		lw	$ra,	($sp)
 		addi	$sp,	$sp,	4
@@ -871,6 +1048,8 @@
 		jal	 entry_index
 		
 		jal	draw_reserve_zones
+		
+		jal	center_board
 		
 		lw	$ra,	($sp)
 		addi	$sp,	$sp, 4
