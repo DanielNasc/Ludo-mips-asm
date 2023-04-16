@@ -184,7 +184,7 @@
 		sw	$a1,	4($sp)
 		
 		# cross 1
-		li 	$a1,	0x371B
+		li 	$a1,	0x341B
 		jal 	crosspiece
 		
 		# cross 2
@@ -497,7 +497,7 @@
 		
 		# drawing the purple time entry index.
 		li	$a0,	0xA467C3	# purple color.
-		li	$a1,	0x3703		# based on the coordinates of the first pixel used to draw the board.
+		li	$a1,	0x3403		# based on the coordinates of the first pixel used to draw the board.
 		
 		addi	$a1,	$a1,	0x3C4B
 		
@@ -519,7 +519,7 @@
 		
 		# drawing the blue time entry index.
 		li	$a0,	0x5A77B9	# blue color.
-		li	$a1,	0x3703		# based on the coordinates of the first pixel used to draw the board.
+		li	$a1,	0x3403		# based on the coordinates of the first pixel used to draw the board.
 		
 		addi	$a1,	$a1,	0x1b0c
 		
@@ -541,7 +541,7 @@
 		
 		# drawing the pink time entry index.
 		li	$a0,	0xF84284	# pink color.
-		li	$a1,	0x3703		# based on the coordinates of the first pixel used to draw the board.
+		li	$a1,	0x3403		# based on the coordinates of the first pixel used to draw the board.
 		
 		addi	$a1,	$a1,	0x002b
 		subi	$a1,	$a1,	0x2600
@@ -564,7 +564,7 @@
 		
 		# drawing the orange time entry index.
 		li	$a0,	0xE8931F	# orange color.
-		li	$a1,	0x3703		# based on the coordinates of the first pixel used to draw the board.
+		li	$a1,	0x3403		# based on the coordinates of the first pixel used to draw the board.
 		
 		addi	$a1,	$a1,	0x006a
 		subi	$a1,	$a1,	0x0500
@@ -637,7 +637,7 @@
 		sw	$a1,	8($sp)
 		
 		# contour
-		addi	$a1,	$a1,	0x3703	# based on the coordinates of the first pixel used to draw the board.
+		addi	$a1,	$a1,	0x3403	# based on the coordinates of the first pixel used to draw the board.
 		subi	$a1,	$a1,	0x2800
 		li	$a2,	8
 		li	$a3,	24
@@ -706,7 +706,7 @@
 		sw	$ra,	($sp)
 		
 		li	$a0,	0x111426	# dark color
-		li	$a1,	0x3703		# based on the coordinates of the first pixel used to draw the board.
+		li	$a1,	0x3403		# based on the coordinates of the first pixel used to draw the board.
 		li	$t0,	24
 		
 		addi	$a1,	$a1,	0x0030
@@ -731,7 +731,7 @@
 		sw	$ra,	($sp)
 		
 		li	$a0,	0x111426	# dark color
-		li	$a1,	0x3703		# based on the coordinates of the first pixel used to draw the board.
+		li	$a1,	0x3403		# based on the coordinates of the first pixel used to draw the board.
 		li	$t0,	24
 		
 		addi	$a1,	$a1,	0x0048
@@ -757,7 +757,7 @@
 		sw	$ra,	($sp)
 		
 		li	$a0,	0xA467C3	# purple color
-		li	$a1,	0x3703		# based on the coordinates of the first pixel used to draw the board.
+		li	$a1,	0x3403		# based on the coordinates of the first pixel used to draw the board.
 		li	$a2,	21		# max triangle width size
 		li	$t0,	11		# counter
 		
@@ -785,7 +785,7 @@
 		sw	$ra,	($sp)
 		
 		li	$a0,	0x5A77B9	# blue color
-		li	$a1,	0x3703		# based on the coordinates of the first pixel used to draw the board.
+		li	$a1,	0x3403		# based on the coordinates of the first pixel used to draw the board.
 		li	$a3,	21		# max triangle height size
 		li	$t0,	11		# counter
 		
@@ -812,7 +812,7 @@
 		sw	$ra,	($sp)
 		
 		li	$a0,	0xF84284	# pink color
-		li	$a1,	0x3703		# based on the coordinates of the first pixel used to draw the board.
+		li	$a1,	0x3403		# based on the coordinates of the first pixel used to draw the board.
 		li	$a2,	21		# max triangle width size
 		li	$t0,	11		# counter
 		
@@ -839,7 +839,7 @@
 		sw	$ra,	($sp)
 		
 		li	$a0,	0xE8931F	# orange color
-		li	$a1,	0x3703		# based on the coordinates of the first pixel used to draw the board.
+		li	$a1,	0x3403		# based on the coordinates of the first pixel used to draw the board.
 		li	$a3,	21		# max triangle height size
 		li	$t0,	11		# counter
 		
@@ -885,7 +885,7 @@
 		
 		# first cell
 		li	$a0,	0xF4FBF8	# white color
-		li 	$a1,	0x3703
+		li 	$a1,	0x3403
 		jal 	cell
 		
 		# add 5 cells to x

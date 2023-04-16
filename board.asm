@@ -46,7 +46,7 @@
 		# a3 - amount
 		
 		# first row (6 cells)
-		li	$a0,	0x3703
+		li	$a0,	0x3403
 		move	$a1,	$t0
 		li	$a2,	0x0007
 		li	$a3,	6
