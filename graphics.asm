@@ -82,14 +82,14 @@
 		sw	$a0,	8($sp)
 	
 		li	$a0,	0x111426	# dark color
-		li	$a2,	7		# width
-		li	$a3,	7		# height
+		li	$a2,	9		# width
+		li	$a3,	9		# height
 		jal	rect
 		
 		lw	$a0,	8($sp)
 		addi 	$a1,	$a1,	0x101
-		li	$a2,	5		# width
-		li	$a3,	5		# height
+		li	$a2,	7		# width
+		li	$a3,	7		# height
 		jal	rect
 		
 		lw	$ra,	($sp)
@@ -161,15 +161,15 @@
 		addi	$a1,	$a1,	0x0304	# y += 2, x += 2;
 		
 		li	$a0,	0x111426	# dark color
-		li	$a2,	0		# width
-		li	$a3,	2		# height 
+		li	$a2,	1		# width
+		li	$a3,	3		# height 
 		jal	rect
 		
 		addi	$a1,	$a1,	0x0100	# y += 1;
 		subi	$a1,	$a1,	0x0001	# x -= 1;
 		
-		li	$a2,	2		# width
-		li	$a3,	0		# height 
+		li	$a2,	3		# width
+		li	$a3,	1		# height 
 		jal	rect
 		
 		lw	$ra,	($sp)
@@ -184,38 +184,38 @@
 		sw	$a1,	4($sp)
 		
 		# cross 1
-		li 	$a1,	0x3718
+		li 	$a1,	0x371B
 		jal 	crosspiece
 		
 		# cross 2
-		addi	$a1,	$a1,	0x0015
-		subi	$a1,	$a1,	0x2300
+		addi	$a1,	$a1,	0x0018
+		subi	$a1,	$a1,	0x2800
 		jal 	crosspiece
 		
 		# cross 3
-		addi	$a1,	$a1,	0x0E0E
+		addi	$a1,	$a1,	0x1010
 		jal 	crosspiece
 		
 		# cross 4
-		addi	$a1,	$a1,	0x1523
+		addi	$a1,	$a1,	0x1828
 		jal 	crosspiece
 		
 		# cross 5
-		addi	$a1,	$a1,	0x0E00
-		subi	$a1,	$a1,	0x000E
+		addi	$a1,	$a1,	0x1000
+		subi	$a1,	$a1,	0x0010
 		jal 	crosspiece
 		
 		# cross 6
-		addi	$a1,	$a1,	0x2300
-		subi	$a1,	$a1,	0x0015
+		addi	$a1,	$a1,	0x2800
+		subi	$a1,	$a1,	0x0018
 		jal 	crosspiece
 		
 		# cross 7
-		subi	$a1,	$a1,	0x0E0E
+		subi	$a1,	$a1,	0x1010
 		jal 	crosspiece
 		
 		# cross 8
-		subi	$a1,	$a1,	0x1523
+		subi	$a1,	$a1,	0x1828
 		jal 	crosspiece
 		
 		lw	$ra,	($sp)
@@ -466,7 +466,7 @@
 		
 		# dice contour
 		li	$a0,	0x111426
-		li	$a1,	0x3c70
+		li	$a1,	0x6c70	# dice coordenates
 		li	$a2,	11
 		li	$a3,	11
 		jal 	rect
@@ -488,7 +488,7 @@
 		lw	$ra,	($sp)
 		addi	$sp,	$sp,	12
 		jr	$ra
-		
+	
 	.globl entry_index
 	entry_index:
 	# draws the arrow that indicates the entry into the victory zone.
@@ -498,21 +498,92 @@
 		# drawing the purple time entry index.
 		li	$a0,	0xA467C3	# purple color.
 		li	$a1,	0x3703		# based on the coordinates of the first pixel used to draw the board.
-		addi	$a1,	$a1,	0x3542
 		
-		li	$a2,	0
-		li	$a3,	0
+		addi	$a1,	$a1,	0x3C4B
+		
+		li	$a2,	1
+		li	$a3,	1
 		jal	rect
 		
 		addi	$a1,	$a1,	0x0001
 		subi	$a1, 	$a1,	0x0100
-		li	$a3,	2
-		jal	rect
+		li	$a2,	1
+		li	$a3,	3
+		jal rect
 		
 		addi	$a1,	$a1,	0x0001
 		subi	$a1, 	$a1,	0x0100
-		li	$a3,	4
+		li	$a2,	1
+		li	$a3,	5
+		jal rect
+		
+		# drawing the blue time entry index.
+		li	$a0,	0x5A77B9	# blue color.
+		li	$a1,	0x3703		# based on the coordinates of the first pixel used to draw the board.
+		
+		addi	$a1,	$a1,	0x1b0c
+		
+		li	$a2,	1
+		li	$a3,	1
 		jal	rect
+		
+		addi	$a1,	$a1,	0x0100
+		subi	$a1, 	$a1,	0x0001
+		li	$a2,	3
+		li	$a3,	1
+		jal rect
+		
+		addi	$a1,	$a1,	0x0100
+		subi	$a1, 	$a1,	0x0001
+		li	$a2,	5
+		li	$a3,	1
+		jal rect
+		
+		# drawing the pink time entry index.
+		li	$a0,	0xF84284	# pink color.
+		li	$a1,	0x3703		# based on the coordinates of the first pixel used to draw the board.
+		
+		addi	$a1,	$a1,	0x002b
+		subi	$a1,	$a1,	0x2600
+		
+		li	$a2,	1
+		li	$a3,	5
+		jal	rect
+		
+		addi	$a1,	$a1,	0x0001
+		addi	$a1, 	$a1,	0x0100
+		li	$a2,	1
+		li	$a3,	3
+		jal rect
+		
+		addi	$a1,	$a1,	0x0001
+		addi	$a1, 	$a1,	0x0100
+		li	$a2,	1
+		li	$a3,	1
+		jal rect
+		
+		# drawing the orange time entry index.
+		li	$a0,	0xE8931F	# orange color.
+		li	$a1,	0x3703		# based on the coordinates of the first pixel used to draw the board.
+		
+		addi	$a1,	$a1,	0x006a
+		subi	$a1,	$a1,	0x0500
+		
+		li	$a2,	5
+		li	$a3,	1
+		jal	rect
+		
+		addi	$a1,	$a1,	0x0100
+		addi	$a1, 	$a1,	0x0001
+		li	$a2,	3
+		li	$a3,	1
+		jal rect
+		
+		addi	$a1,	$a1,	0x0100
+		addi	$a1, 	$a1,	0x0001
+		li	$a2,	1
+		li	$a3,	1
+		jal rect
 		
 		lw	$ra,	($sp)
 		addi	$sp,	$sp,	4
@@ -530,159 +601,159 @@
 		
 		# add 5 cells to x
 		li	$a2,	5
-		li	$a3,	0x0007
+		li	$a3,	0x0008
 		jal	loop_add
 		
 		
 		# sub 1 cell to y
 		li	$a2,	1
-		li	$a3,	0x0700
+		li	$a3,	0x0800
 		jal 	loop_sub
 		
 		# add 1 cell to x
 		li	$a2,	1
-		li	$a3,	0x0007
+		li	$a3,	0x0008
 		jal 	loop_add
 		
 		# sub 5 cells to y
 		li	$a2,	5
-		li	$a3,	0x0700
+		li	$a3,	0x0800
 		jal 	loop_sub
 		
 		# add 2 cells to x
 		li	$a2,	2
-		li	$a3,	0x0007
+		li	$a3,	0x0008
 		jal 	loop_add
 		
 		# add 5 cells to y
 		li	$a2,	5
-		li	$a3,	0x0700
+		li	$a3,	0x0800
 		jal 	loop_add
 		
 		# add 1 cell to x
 		li	$a2,	1
-		li	$a3,	0x0007
+		li	$a3,	0x0008
 		jal 	loop_add
 		
 		# add 1 cell to y
 		li	$a2,	1
-		li	$a3,	0x0700
+		li	$a3,	0x0800
 		jal 	loop_add
 		
 		# add 5 cells to x
 		li	$a2,	5
-		li	$a3,	0x0007
+		li	$a3,	0x0008
 		jal 	loop_add
 		
 		# add 2 cells to y
 		li	$a2,	2
-		li	$a3,	0x0700
+		li	$a3,	0x0800
 		jal 	loop_add
 		
 		# sub 5 cells to x
 		li	$a2,	5
-		li	$a3,	0x0007
+		li	$a3,	0x0008
 		jal 	loop_sub
 		
 		# add 1 cell to y
 		li	$a2,	1
-		li	$a3,	0x0700
+		li	$a3,	0x0800
 		jal 	loop_add
 		
 		# sub 1 cell to x
 		li	$a2,	1
-		li	$a3,	0x0007
+		li	$a3,	0x0008
 		jal 	loop_sub
 		
 		# add 5 cells to y
 		li	$a2,	5
-		li	$a3,	0x0700
+		li	$a3,	0x0800
 		jal 	loop_add
 		
 		# sub 2 cells to x
 		li	$a2,	2
-		li	$a3,	0x0007
+		li	$a3,	0x0008
 		jal 	loop_sub
 		
 		# sub 5 cells to y
 		li	$a2,	5
-		li	$a3,	0x0700
+		li	$a3,	0x0800
 		jal 	loop_sub
 		
 		# sub 1 cell to x
 		li	$a2,	1
-		li	$a3,	0x0007
+		li	$a3,	0x0008
 		jal 	loop_sub
 		
 		# sub 1 cell to y
 		li	$a2,	1
-		li	$a3,	0x0700
+		li	$a3,	0x0800
 		jal 	loop_sub
 		
 		# sub 5 cells to x
 		li	$a2,	5
-		li	$a3,	0x0007
+		li	$a3,	0x0008
 		jal 	loop_sub
 		
 		# sub 1 cell to y
 		li	$a2,	1
-		li	$a3,	0x0700
+		li	$a3,	0x0800
 		jal 	loop_sub
 		
 		# creating blue cells
 		li	$a0,	0x5A77B9	# blue color
 		
-		addi	$a1,	$a1,	0x0700
+		addi	$a1,	$a1,	0x0800
 		
 		li	$a2,	1
-		li	$a3,	0x0007
+		li	$a3,	0x0008
 		jal 	loop_add
 		
-		subi	$a1,	$a1,	0x0707
+		subi	$a1,	$a1,	0x0808
 		
 		li	$a2,	5
-		li	$a3,	0x0007
+		li	$a3,	0x0008
 		jal 	loop_add
 		
 		# creating orange cells
 		li	$a0,	0xE8931F	# orange color
 		
-		addi	$a1,	$a1,	0x0015	# pula 3 casas para a direita (eixo x)
+		addi	$a1,	$a1,	0x0018	# pula 3 casas para a direita (eixo x)
 		
 		li	$a2,	5
-		li	$a3,	0x0007
+		li	$a3,	0x0008
 		jal 	loop_add
 		
-		subi	$a1,	$a1,	0x0707
+		subi	$a1,	$a1,	0x0808
 		
 		li	$a2,	1
-		li	$a3,	0x0007
+		li	$a3,	0x0008
 		jal 	loop_add
 		
 		# creating pink cells
 		li	$a0,	0xF84284	# pink color
 		
-		subi	$a1,	$a1,	0x2338	# sobe 5 casas para cima(eixo y) e 8 casas para a esquerda (eixo x)
+		subi	$a1,	$a1,	0x2840	# sobe 5 casas para cima(eixo y) e 8 casas para a esquerda (eixo x)
 		
 		li	$a2,	2
-		li	$a3,	0x0007
+		li	$a3,	0x0008
 		jal 	loop_add
 		
 		li	$a2,	4
-		li	$a3,	0x0700
+		li	$a3,	0x0800
 		jal 	loop_add
 		
 		# creating purple cells
 		li	$a0,	0xA467C3	# purple color
 		
-		addi	$a1,	$a1,	0x1500	# sobe 5 casas para cima(eixo y) e 8 casas para a esquerda (eixo x)
+		addi	$a1,	$a1,	0x1800	# três casas no eixo y
 		
 		li	$a2,	5
-		li	$a3,	0x0700
+		li	$a3,	0x0800
 		jal 	loop_add
 		
 		li	$a2,	1
-		li	$a3,	0x0007
+		li	$a3,	0x0008
 		jal 	loop_add
 		
 		jal	 entry_index
