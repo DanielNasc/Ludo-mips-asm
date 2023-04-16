@@ -588,7 +588,109 @@
 		lw	$ra,	($sp)
 		addi	$sp,	$sp,	4
 		jr	$ra
-	
+		
+	players_numbers:
+		subi	$sp,	$sp,	4
+		sw	$ra,	($sp)
+		
+		li	$a0,	0xF4FBF8	# white color
+		li	$a1,	0x3403		# based on the coordinates of the first pixel used to draw the board.
+		
+		# drawing number 1
+		addi	$a1,	$a1,	0x3264	# goes to the coordinate where the number will be printed
+		li	$a2,	1
+		li	$a3,	5
+		jal	rect
+		
+		addi	$a1,	$a1,	0x0100
+		subi	$a1,	$a1,	0x0001
+		li	$a2,	1
+		li	$a3,	1
+		jal	rect
+		
+		addi	$a1,	$a1,	0x0300
+		li	$a2,	3
+		li	$a3,	1
+		jal	rect
+		
+		# drawing number 2
+		li	$a1,	0x3403		# based on the coordinates of the first pixel used to draw the board.
+		
+		addi	$a1,	$a1,	0x3213
+		li	$a2,	3
+		li	$a3,	1
+		jal	rect
+		
+		addi	$a1,	$a1,	0x0200
+		li	$a2,	3
+		li	$a3,	1
+		jal	rect
+		
+		addi	$a1,	$a1,	0x0200
+		li	$a2,	3
+		li	$a3,	1
+		jal	rect
+		
+		subi	$a1,	$a1,	0x0100
+		li	$a2,	1
+		li	$a3,	1
+		jal	rect
+		
+		addi	$a1,	$a1,	0x0002
+		subi	$a1,	$a1,	0x0200
+		li	$a2,	1
+		li	$a3,	1
+		jal	rect
+		
+		# drawing number 3
+		li	$a1,	0x3403		# based on the coordinates of the first pixel used to draw the board.
+		
+		addi	$a1,	$a1,	0x0013
+		subi	$a1,	$a1,	0x1e00
+		li	$a2,	3
+		li	$a3,	1
+		jal	rect
+		
+		addi	$a1,	$a1,	0x0200
+		li	$a2,	3
+		li	$a3,	1
+		jal	rect
+		
+		addi	$a1,	$a1,	0x0200
+		li	$a2,	3
+		li	$a3,	1
+		jal	rect
+		
+		addi	$a1,	$a1,	0x0002
+		subi	$a1,	$a1,	0x0400
+		li	$a2,	1
+		li	$a3,	5
+		jal	rect
+		
+		# drawing number 4
+		li	$a1,	0x3403		# based on the coordinates of the first pixel used to draw the board.
+		
+		addi	$a1,	$a1,	0x0063
+		subi	$a1,	$a1,	0x1e00
+		li	$a2,	1
+		li	$a3,	3
+		jal	rect
+		
+		addi	$a1,	$a1,	0x0002
+		li	$a2,	1
+		li	$a3,	5
+		jal	rect
+		
+		addi	$a1,	$a1,	0x0200
+		subi	$a1,	$a1,	0x0002
+		li	$a2,	3
+		li	$a3,	1
+		jal	rect
+		
+		lw	$ra,	($sp)
+		addi	$sp,	$sp,	4
+		jr	$ra
+		
 	set_purple_color:
 		subi	$sp,	$sp,	4
 		sw	$ra,	($sp)
@@ -638,16 +740,16 @@
 		
 		# contour
 		addi	$a1,	$a1,	0x3403	# based on the coordinates of the first pixel used to draw the board.
-		subi	$a1,	$a1,	0x2800
-		li	$a2,	8
-		li	$a3,	24
+		subi	$a1,	$a1,	0x2900
+		li	$a2,	9
+		li	$a3,	27
 		jal	rect
 		
 		# contour
-		addi	$a1,	$a1,	0x0800
-		subi	$a1,	$a1,	0x0008
-		li	$a2,	24
-		li	$a3,	8
+		addi	$a1,	$a1,	0x0900
+		subi	$a1,	$a1,	0x0009
+		li	$a2,	27
+		li	$a3,	9
 		jal	rect
 		
 		# interior
@@ -657,14 +759,14 @@
 		beq	$a0,	0xC72D1E,	set_orange_color
 		
 		addi	$a1,	$a1,	0x0101
-		li	$a2,	22
-		li	$a3,	6
+		li	$a2,	25
+		li	$a3,	7
 		jal	rect
 		
-		addi	$a1,	$a1,	0x0008
-		subi	$a1,	$a1,	0x0800
-		li	$a2,	6
-		li	$a3,	22
+		addi	$a1,	$a1,	0x0009
+		subi	$a1,	$a1,	0x0900
+		li	$a2,	7
+		li	$a3,	25
 		jal	rect
 		
 		
@@ -1047,8 +1149,10 @@
 		
 		jal	 entry_index
 		
-		jal	draw_reserve_zones
+		jal 	create_crosspieces
 		
+		jal	draw_reserve_zones
+		jal	players_numbers
 		jal	center_board
 		
 		lw	$ra,	($sp)

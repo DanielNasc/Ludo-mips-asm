@@ -18,8 +18,6 @@
 		li 	$a1,	0x3403		# cell coordenate
 		jal 	piece	
 		
-		jal 	create_crosspieces
-		
 		jal	dice
 		
 		jal	roll_die
