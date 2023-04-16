@@ -26,6 +26,7 @@
 		# convert y in pixels::	y << 9
 		# y * 2^7 (128 pixels per row) * 2^2 (addresses by pixel)
 		sll	$t7,	$t7,	9
+		subi	$a3,	$a3,	1
 		sll	$a3,	$a3,	9	# convert height in pixels
 
 		add	$t3,	$t0,	$t6	# move to x coord
@@ -37,7 +38,7 @@
 	walk_x:
 		sw	$a0,	0($t3)
 		addi	$t3,	$t3,	4	# next pixel
-		ble	$t3,	$t4, 	walk_x	# if t3 didnt reach the x limit yet, go to next iteration
+		blt	$t3,	$t4, 	walk_x	# if t3 didnt reach the x limit yet, go to next iteration
 	walk_y:
 		bge	$t3,	$t5,	end_rect
 		
@@ -45,7 +46,7 @@
 		
 		add	$t3,	$t3,	$t1
 		sub	$t3,	$t3,	$a2	# update pos
-		subi	$t3,	$t3,	4
+		#subi	$t3,	$t3,	4
 		
 		j	walk_x
 		
