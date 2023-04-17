@@ -1,6 +1,8 @@
 .data
 	frameBuffer: 		.space	0x80000
 	pixels_per_block_shift:	.word	2	# shift 2 places (multiply by 4)
+	dark_colors:		.word	0x6A448A, 0x1C2153, 0xC6224E, 0xC72D1E
+	normal_colors:		.word	0xF4FBF8, 0xA467C3, 0x2D4280, 0xF84284, 0xE8931F
 .text
 	.globl rect
 	rect:
@@ -76,29 +78,62 @@
 
 	.globl cell
 	cell:
-		subi	$sp,	$sp,	12
+		subi	$sp,	$sp,	20
 		sw	$ra,	($sp)
-		sw	$a1,	4($sp)
-		sw	$a0,	8($sp)
+		sw	$a0,	4($sp)		# team (0 - 4)
+		sw	$a1,	8($sp)		# coordinate
+		sw	$a2,	12($sp)		# type
+		sw	$a3,	16($sp)		# amount
 	
 		li	$a0,	0x111426	# dark color
 		li	$a2,	9		# width
 		li	$a3,	9		# height
 		jal	rect
+	
+		andi	$t0,	$a2,	1
+		la	$t1,	normal_colors
+		beqz	$t0,	not_colorful
+		mul	$t2,	$a0,	4
+		add	$t1,	$t1,	$t2
 		
-		lw	$a0,	8($sp)
+		not_colorful:
+		lw	$a0,	($t1)
 		addi 	$a1,	$a1,	0x101
 		li	$a2,	7		# width
 		li	$a3,	7		# height
 		jal	rect
 		
+		lw	$a1,	8($sp)
+		lw	$a2,	12($sp)
+		blt	$a2,	2, not_crosspiece
+		
+		jal 	crosspiece
+		
+		not_crosspiece:
+		lw	$a0,	4($sp)		# team (0 - 4)
+		lw	$a1,	8($sp)		# coordinate
+		lw	$a2,	12($sp)		# type
+		lw	$a3,	16($sp)		# amount
+		
+		beqz	$a0,	end_cell
+		
+		subi	$a0,	$a0,	1
+		la	$t0,	dark_colors	
+		mul	$a0,	$a0,	4
+		add	$a0,	$a0,	$t0
+		lw	$a0,	($a0)
+		
+		jal	one_piece
 		lw	$ra,	($sp)
 		lw	$a1,	4($sp)
 		addi	$sp,	$sp, 12
 		
+		end_cell:
+		
 		jr	$ra 
 		
 	loop_add:
+		# 
 		subi	$sp,	$sp,	12
 		sw	$ra,	($sp)
 		
@@ -111,24 +146,6 @@
 			lw	$a3,	8($sp)
 			subi	$a2,	$a2,	1
 			bgtz	$a2,	loop_a
-		
-		lw	$ra,	($sp)
-		addi	$sp,	$sp,	12
-		jr	$ra
-	
-	loop_sub:
-		subi	$sp,	$sp,	12
-		sw	$ra,	($sp)
-		
-		loop_s:
-			sw	$a2,	4($sp)
-			sw	$a3,	8($sp)
-			sub	$a1,	$a1,	$a3
-			jal	cell
-			lw	$a2,	4($sp)
-			lw	$a3,	8($sp)
-			subi	$a2,	$a2,	1
-			bgtz	$a2,	loop_s
 		
 		lw	$ra,	($sp)
 		addi	$sp,	$sp,	12
@@ -190,38 +207,94 @@
 		jal	rect
 		
 		lw	$ra,	($sp)
+		lw	$a1,	4($sp)
 		addi	$sp,	$sp,	12
 		jr	$ra
 	
-	.globl 	more_pieces
-	more_pieces:
-		subi	$sp,	$sp, 	8
+	draw_small_piece_1:
+		subi	$sp,	$sp,	8
 		sw	$ra,	($sp)
 		sw	$a1,	4($sp)
 		
 		# piece 1
 		li	$a0,	0xE8931F
-		addi	$a1,	$a1,	0x0202	
-		jal small_piece
+		jal	small_piece
+		
+		lw	$ra,	($sp)
+		lw	$a1,	4($sp)
+		addi	$sp,	$sp,	8
+		jr	$ra
+		
+	draw_small_piece_2:
+		subi	$sp,	$sp,	8
+		sw	$ra,	($sp)
+		sw	$a1,	4($sp)
 		
 		# piece 2
-		li	$a0,	0xA467C3
+		li	$a0,	0xF84284
 		addi	$a1,	$a1,	0x0303	
 		jal small_piece
 		
+		lw	$ra,	($sp)
+		lw	$a1,	4($sp)
+		addi	$sp,	$sp,	8
+		jr	$ra
+	
+	draw_small_piece_3:
+		subi	$sp,	$sp,	8
+		sw	$ra,	($sp)
+		sw	$a1,	4($sp)
+		
 		# piece 3
 		li	$a0,	0xC6224E
-		subi	$a1,	$a1,	0x0300	
-		jal small_piece
-		
-		# piece 4
-		li	$a0,	0x2D4280
-		subi	$a1,	$a1,	0x0003	
-		addi	$a1,	$a1,	0x0300
+		addi	$a1,	$a1,	0x0300	
 		jal small_piece
 	
 		lw	$ra,	($sp)
+		lw	$a1,	4($sp)
 		addi	$sp,	$sp,	8
+		jr	$ra
+	
+	draw_small_piece_4:
+		subi	$sp,	$sp,	8
+		sw	$ra,	($sp)
+		sw	$a1,	4($sp)
+		
+		# piece 4
+		li	$a0,	0x2D4280
+		addi	$a1,	$a1,	0x0003
+		jal small_piece
+		
+		lw	$ra,	($sp)
+		lw	$a1,	4($sp)
+		addi	$sp,	$sp,	8
+		jr	$ra
+		
+	.globl 	more_pieces
+	more_pieces:
+		subi	$sp,	$sp, 	12
+		sw	$ra,	($sp)
+		sw	$a1,	4($sp)
+		
+		addi	$a1,	$a1,	0x0201	
+		
+			
+			beq	$a2,	2,	call_draw_small_piece_2
+			beq	$a2,	3,	call_draw_small_piece_3
+			
+			
+			jal	draw_small_piece_4
+			call_draw_small_piece_3:
+				jal 	draw_small_piece_3
+			call_draw_small_piece_2:
+				jal 	draw_small_piece_2
+				jal	draw_small_piece_1
+			
+			
+			
+	
+		lw	$ra,	($sp)
+		addi	$sp,	$sp,	12
 		jr	$ra
 			
 	.globl 	crosspiece
@@ -1091,8 +1164,10 @@
 		sw	$ra,	($sp)
 		
 		# first cell
-		li	$a0,	0xF4FBF8	# white color
+		li	$a0,	0	# white color
 		li 	$a1,	0x3403
+		li	$a2,	0
+		li	$a3,	0
 		jal 	cell
 		
 		# add 5 cells to x
@@ -1103,8 +1178,8 @@
 		
 		# sub 1 cell to y
 		li	$a2,	1
-		li	$a3,	0x0800
-		jal 	loop_sub
+		li	$a3,	-0x0800
+		jal	loop_add
 		
 		# add 1 cell to x
 		li	$a2,	1
@@ -1113,8 +1188,8 @@
 		
 		# sub 5 cells to y
 		li	$a2,	5
-		li	$a3,	0x0800
-		jal 	loop_sub
+		li	$a3,	-0x0800
+		jal	loop_add
 		
 		# add 2 cells to x
 		li	$a2,	2
@@ -1148,8 +1223,8 @@
 		
 		# sub 5 cells to x
 		li	$a2,	5
-		li	$a3,	0x0008
-		jal 	loop_sub
+		li	$a3,	-0x0008
+		jal	loop_add
 		
 		# add 1 cell to y
 		li	$a2,	1
@@ -1158,8 +1233,8 @@
 		
 		# sub 1 cell to x
 		li	$a2,	1
-		li	$a3,	0x0008
-		jal 	loop_sub
+		li	$a3,	-0x0008
+		jal	loop_add
 		
 		# add 5 cells to y
 		li	$a2,	5
@@ -1168,33 +1243,33 @@
 		
 		# sub 2 cells to x
 		li	$a2,	2
-		li	$a3,	0x0008
-		jal 	loop_sub
+		li	$a3,	-0x0008
+		jal	loop_add
 		
 		# sub 5 cells to y
 		li	$a2,	5
-		li	$a3,	0x0800
-		jal 	loop_sub
+		li	$a3,	-0x0800
+		jal	loop_add
 		
 		# sub 1 cell to x
 		li	$a2,	1
-		li	$a3,	0x0008
-		jal 	loop_sub
+		li	$a3,	-0x0008
+		jal	loop_add
 		
 		# sub 1 cell to y
 		li	$a2,	1
-		li	$a3,	0x0800
-		jal 	loop_sub
+		li	$a3,	-0x0800
+		jal	loop_add
 		
 		# sub 5 cells to x
 		li	$a2,	5
-		li	$a3,	0x0008
-		jal 	loop_sub
+		li	$a3,	-0x0008
+		jal	loop_add
 		
 		# sub 1 cell to y
 		li	$a2,	1
-		li	$a3,	0x0800
-		jal 	loop_sub
+		li	$a3,	-0x0800
+		jal	loop_add
 		
 		# creating blue cells
 		li	$a0,	0x5A77B9	# blue color
@@ -1264,4 +1339,3 @@
 		addi	$sp,	$sp, 4
 		
 		jr	$ra 
-	

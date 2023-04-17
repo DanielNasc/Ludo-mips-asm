@@ -15,29 +15,30 @@
 		
 		# How to create a piece
 		li 	$a0,	0xC6224E	# color
-		li 	$a1,	0x3403		# cell coordenate
+		li 	$a1,	0x3403		# cell coordinate
 		jal 	one_piece	
 		
 		# How to create two pieces
-		li 	$a1,	0x441B		# cell coordenate
+		li 	$a1,	0x441c		# cell coordinate
+		li	$a2,	2
 		jal 	more_pieces
 		
 		# How to create reserve pieces
 		# Purple player
 		li	$a0,	0x6A448A	# dark purple color
-		li	$a1,	0x5057		# coordenate + 0x2800
+		li	$a1,	0x5057		# coordinate + 0x2800
 		jal 	reserve_piece
 		# Blue player
 		li	$a0,	0x1C2153	# dark blue color
-		li	$a1,	0x5007		# coordenate + 0x2800
+		li	$a1,	0x5007		# coordinate + 0x2800
 		jal 	reserve_piece
 		# Pink player
 		li	$a0,	0xC6224E	# dark pink color
-		li	$a1,	0x0007		# coordenate
+		li	$a1,	0x0007		# coordinate
 		jal 	reserve_piece
 		# Orange player
 		li	$a0,	0xC72D1E	# dark orange color
-		li	$a1,	0x0057		# coordenate
+		li	$a1,	0x0057		# coordinate
 		jal 	reserve_piece
 		
 		jal	dice
