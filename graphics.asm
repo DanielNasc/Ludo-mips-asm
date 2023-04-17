@@ -134,22 +134,94 @@
 		addi	$sp,	$sp,	12
 		jr	$ra	
 			
-	.globl 	piece
-	piece:
+	.globl 	one_piece
+	one_piece:
 		subi	$sp,	$sp, 	12
 		sw	$ra,	($sp)
 		sw	$a0,	4($sp)
 		sw	$a1,	8($sp)
 		
-		addi	$a1,	$a1,	0x0202	# y += 2, x += 2;
+		addi	$a1,	$a1,	0x0602	
+		
+		li	$a2,	5		# width
+		li	$a3,	1		# height
+		jal	rect
+		
+		beq	$a0,	0x6A448A,	set_purple_color
+		beq	$a0,	0x1C2153,	set_blue_color
+		beq	$a0,	0xC6224E,	set_pink_color
+		beq	$a0,	0xC72D1E,	set_orange_color
+		
+		subi	$a1,	$a1,	0x0100
+		addi	$a1,	$a1,	0x0001	
 		
 		li	$a2,	3		# width
+		li	$a3,	1		# height
+		jal	rect
+		
+		subi	$a1,	$a1,	0x0200
+		
+		li	$a2,	3		# width
+		li	$a3,	1		# height
+		jal	rect
+		
+		subi	$a1,	$a1,	0x0100
+		addi	$a1,	$a1,	0x0001	
+		
+		li	$a2,	1		# width
 		li	$a3,	3		# height
 		jal	rect
 		
-	
+		lw	$a0,	4($sp)
+		lw	$a1,	8($sp)
 		lw	$ra,	($sp)
 		addi	$sp,	$sp,	12
+		jr	$ra
+		
+	.globl	small_piece
+	small_piece:
+		subi	$sp,	$sp, 	12
+		sw	$ra,	($sp)
+		sw	$a0,	4($sp)
+		sw	$a1,	8($sp)
+		
+		li	$a2,	2		# width
+		li	$a3,	2		# height
+		jal	rect
+		
+		lw	$ra,	($sp)
+		addi	$sp,	$sp,	12
+		jr	$ra
+	
+	.globl 	more_pieces
+	more_pieces:
+		subi	$sp,	$sp, 	8
+		sw	$ra,	($sp)
+		sw	$a1,	4($sp)
+		
+		# piece 1
+		li	$a0,	0xE8931F
+		addi	$a1,	$a1,	0x0202	
+		jal small_piece
+		
+		# piece 2
+		li	$a0,	0xA467C3
+		addi	$a1,	$a1,	0x0303	
+		jal small_piece
+		
+		# piece 3
+		li	$a0,	0xC6224E
+		subi	$a1,	$a1,	0x0300	
+		jal small_piece
+		
+		# piece 4
+		li	$a0,	0x2D4280
+		subi	$a1,	$a1,	0x0003	
+		addi	$a1,	$a1,	0x0300
+		jal small_piece
+	
+		lw	$ra,	($sp)
+		addi	$sp,	$sp,	8
 		jr	$ra
 			
 	.globl 	crosspiece
@@ -466,7 +538,7 @@
 		
 		# dice contour
 		li	$a0,	0x111426
-		li	$a1,	0x5470	# dice coordenates
+		li	$a1,	0x4f70	# dice coordenates
 		li	$a2,	11
 		li	$a3,	11
 		jal 	rect
@@ -510,6 +582,8 @@
 		li	$a2,	1
 		li	$a3,	3
 		jal rect
+		
+		beq	$a0,	0x6A448A,	set_purple_color
 		
 		addi	$a1,	$a1,	0x0001
 		subi	$a1, 	$a1,	0x0100
@@ -730,7 +804,8 @@
 		lw	$ra,	($sp)
 		addi	$sp,	$sp,	4
 		jr	$ra
-	
+
+		
 	.globl	reserve_zone
 	reserve_zone:	
 		subi	$sp,	$sp,	12
@@ -740,6 +815,7 @@
 		
 		# contour
 		addi	$a1,	$a1,	0x3403	# based on the coordinates of the first pixel used to draw the board.
+		
 		subi	$a1,	$a1,	0x2900
 		li	$a2,	9
 		li	$a3,	27
@@ -769,6 +845,35 @@
 		li	$a3,	25
 		jal	rect
 		
+		
+		lw	$ra,	($sp)
+		addi	$sp,	$sp,	12
+		jr	$ra
+	
+	.globl	reserve_piece
+	reserve_piece:
+		subi	$sp,	$sp,	12
+		sw	$ra,	($sp)
+		sw	$a0,	4($sp)
+		sw	$a1,	8($sp)
+		
+		addi	$a1,	$a1,	0x3403	# based on the coordinates of the first pixel used to draw the board.
+		subi	$a1,	$a1,	0x2800
+		
+		# first reserve piece		
+		jal	one_piece
+		
+		# second reserve piece
+		addi	$a1,	$a1,	0x0012
+		jal	one_piece
+		
+		# third reserve piece
+		addi	$a1,	$a1,	0x1000
+		jal	one_piece
+		
+		# fourth reserve piece
+		subi	$a1,	$a1,	0x0012
+		jal	one_piece
 		
 		lw	$ra,	($sp)
 		addi	$sp,	$sp,	12
