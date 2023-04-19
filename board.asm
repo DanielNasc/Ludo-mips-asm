@@ -4,26 +4,47 @@
 		# a1 - start address
 		# a2 - update value
 		# a3 - amount
-		li	$t0,	0	# cell_index
-		move	$t1,	$a0	# current position
-		move	$t3,	$a1	# current address
+		subi	$sp,	$sp,	4
+		sw	$ra,	($sp)
 		
-		walk_and_init_line:
-			sw	$t1,	($t3)
+		li	$s0,	0		# counter
+		move	$s1,	$a0		# pos
+		move	$s2,	$a1		# memory address
+		move	$s3,	$a2		# update value
+		andi	$s4,	$a3, 	0xF	# amount (cells)
+		srl	$a3,	$a3,	4	
+		andi	$s6,	$a3,	0xF	# type
+		srl	$a3,	$a3,	4
+		move	$s7,	$a3		# team
+		
+		
+		walk_init_cells:
+			sw	$s1,	($s2)
 			
-			addi	$t0,	$t0,	1
-			addi	$t3,	$t3,	4
-			add	$t1,	$t1,	$a2
-				
-			blt	$t0,	$a3,	walk_and_init_line
-				
-		move	$v0,	$t1
-		sub	$v0,	$v0,	$a2
+			# a0 -> team
+			# a1 -> coord
+			# a2 -> type
+			# a3 -> amount (pieces)
+			move	$a0,	$s7
+			move	$a1,	$s1
+			move	$a2,	$s6
+			li	$a3,	0
+			jal	cell
+			
+			addi	$s0,	$s0,	1
+			add	$s1,	$s1,	$s3
+			addi	$s2,	$s2,	4
+			
+			blt	$s0,	$s4,	walk_init_cells
 		
-		move	$v1,	$t3
+		sub	$v0,	$s1,	$s3
+		move	$v1,	$s2
 		
+		lw	$ra,	($sp)
+		addi	$sp,	$sp,	4
 		jr	$ra
-				
+		
+		
 
 	.globl	init_cells
 	init_cells:
@@ -53,22 +74,24 @@
 		jal	init_normal_line
 		
 		# go up a cell
-		move	$t1,	$v0
-		subi	$t1,	$t1,	0x0800
-		move	$t2,	$v1
-		sw	$t1,	($t2)
+		move	$a0,	$v0
+		subi	$a0,	$a0,	0x0800
+		move	$a1,	$v1
+		li	$a2,	0
+		li	$a3,	1
+		jal	init_normal_line
 		
 		# go right and go up 6 cells
-		move	$a0,	$t1
+		move	$a0,	$v0
 		addi	$a0,	$a0,	0x0008
 		move	$a1,	$v1
-		addi	$a1,	$a1,	4
 		li	$a2,	-0x0800
+		li	$a3,	6
 		jal 	init_normal_line
 		
 		# go right and go two cells
 		move	$a0,	$v0
-		addi	$a0,	$a0,	0x00007
+		addi	$a0,	$a0,	0x00008
 		move	$a1,	$v1
 		li	$a2,	0x0008
 		li	$a3,	2
@@ -83,16 +106,17 @@
 		jal	init_normal_line
 		
 		# go right one cell
-		move	$t1,	$v0
-		addi	$t1,	$t1,	0x0008
-		move	$t2,	$v1
-		sw	$t1,	($t2)
+		move	$a0,	$v0
+		addi	$a0,	$a0,	0x0008
+		move	$a1,	$v1
+		li	$a2,	0
+		li	$a3,	1
+		jal	init_normal_line
 		
 		# go down and go right 6 cells
-		move	$a0,	$t1
+		move	$a0,	$v0
 		addi	$a0,	$a0,	0x0800
 		move	$a1,	$v1
-		addi	$a1,	$a1,	4
 		li	$a2,	0x0008
 		li	$a3,	6
 		jal 	init_normal_line
@@ -114,16 +138,17 @@
 		jal	init_normal_line
 
 		# go down one cell
-		move	$t1,	$v0
-		addi	$t1,	$t1,	0x0800
-		move	$t2,	$v1
-		sw	$t1,	($t2)
+		move	$a0,	$v0
+		addi	$a0,	$a0,	0x0800
+		move	$a1,	$v1 
+		li	$a2,	0
+		li	$a3,	1
+		jal	init_normal_line
 
 		# go left and go down 6 cells
-		move	$a0,	$t1
+		move	$a0,	$v0
 		subi	$a0,	$a0,	0x0008
 		move	$a1,	$v1
-		addi	$a1,	$a1,	4
 		li	$a2,	0x0800
 		li	$a3,	6
 		jal 	init_normal_line
@@ -145,25 +170,67 @@
 		jal	init_normal_line
 
 		# go left one cell
-		move	$t1,	$v0
-		subi	$t1,	$t1,	0x0008
-		move	$t2,	$v1
-		sw	$t1,	($t2)
+		move	$a0,	$v0
+		subi	$a0,	$a0,	0x0008
+		move	$a1,	$v1
+		li	$a2,	0
+		li	$a3,	1
+		jal	init_normal_line
 
 		# go up and go left 6 cells
-		move	$a0,	$t1
+		move	$a0,	$v0
 		subi	$a0,	$a0,	0x0800
 		move	$a1,	$v1
-		addi	$a1,	$a1,	4
 		li	$a2,	-0x0008
 		li	$a3,	6
 		jal 	init_normal_line
 
 		# go one cell up
-		move	$t1,	$v0
-		subi	$t1,	$t1,	0x0800
-		move	$t2,	$v1
-		sw	$t1,	($t2)
+		move	$a0,	$v0
+		subi	$a0,	$a0,	0x0800
+		move	$a1,	$v1
+		li	$a2,	0
+		li	$a3,	1
+		jal	init_normal_line
+		
+		# COLORFULLLL
+		# a0 - start pos
+		# a1 - start address
+		# a2 - update value
+		# a3 -	team type amount
+		# go right and go right 6 
+		move	$a0,	$v0
+		addi	$a0,	$a0,	0x0008
+		move	$a1,	$v1
+		li	$a2,	0x0008
+		li	$a3,	0x215
+		jal	init_normal_line
+		
+		# go 2 for the right and 2 for the top
+		move	$a0,	$v0
+		addi	$a0,	$a0,	0x0010
+		subi	$a0,	$a0,	0x1000
+		move	$a1,	$v1
+		li	$a2,	-0x0800
+		li	$a3,	0x315
+		jal	init_normal_line
+		
+		# go 8 for the bottom
+		move	$a0,	$v0
+		addi	$a0,	$a0,	0x4000
+		move	$a1,	$v1
+		li	$a2,	0x0800
+		li	$a3,	0x115
+		jal	init_normal_line
+		
+		# go 8 for the bottom
+		move	$a0,	$v0
+		addi	$a0,	$a0,	0x0010
+		subi	$a0,	$a0,	0x3000
+		move	$a1,	$v1
+		li	$a2,	0x0008
+		li	$a3,	0x415
+		jal	init_normal_line
 		
 		# get return address and go back
 		lw	$ra,	($sp)

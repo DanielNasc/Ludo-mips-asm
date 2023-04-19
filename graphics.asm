@@ -89,7 +89,12 @@
 		li	$a2,	9		# width
 		li	$a3,	9		# height
 		jal	rect
-	
+		
+		lw	$a0,	4($sp)		# team (0 - 4)
+		lw	$a1,	8($sp)		# coordinate
+		lw	$a2,	12($sp)		# type
+		lw	$a3,	16($sp)		# amount
+
 		andi	$t0,	$a2,	1
 		la	$t1,	normal_colors
 		beqz	$t0,	not_colorful
@@ -115,7 +120,7 @@
 		lw	$a2,	12($sp)		# type
 		lw	$a3,	16($sp)		# amount
 		
-		beqz	$a0,	end_cell
+		beqz	$a3,	end_cell
 		
 		subi	$a0,	$a0,	1
 		la	$t0,	dark_colors	
@@ -124,11 +129,11 @@
 		lw	$a0,	($a0)
 		
 		jal	one_piece
-		lw	$ra,	($sp)
-		lw	$a1,	4($sp)
-		addi	$sp,	$sp, 12
 		
 		end_cell:
+		lw	$ra,	($sp)
+		lw	$a1,	4($sp)
+		addi	$sp,	$sp, 	20
 		
 		jr	$ra 
 		

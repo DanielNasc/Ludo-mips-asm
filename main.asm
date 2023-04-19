@@ -7,7 +7,7 @@
 	main:
 		# 256 x 128 cells (2x2 pixels)
 		jal 	background
-		jal 	board
+		#jal 	board
 
 		jal	init_cells
 		jal 	create_pieces
