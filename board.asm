@@ -198,42 +198,79 @@
 		# a1 - start address
 		# a2 - update value
 		# a3 -	team type amount
-		# go right and go right 6 
+
+		# go right and down and go right 1
+		move	$a0,	$v0
+		addi	$a0,	$a0,	0x0808
+		move	$a1,	$v1
+		li	$a2,	0x0008
+		li	$a3,	0x231
+		jal	init_normal_line
+		
+		# go up and go right 6
+		move	$a0,	$v0
+		subi	$a0,	$a0,	0x0800
+		move	$a1,	$v1
+		li	$a2,	0x0008
+		li	$a3,	0x216
+		jal	init_normal_line
+		
+		# jump 6 up and print 1
+		move	$a0,	$v0
+		subi	$a0,	$a0,	0x3000
+		move	$a1,	$v1
+		li	$a3,	0x331
+		jal	init_normal_line
+
+		# go up and go right 6	
 		move	$a0,	$v0
 		addi	$a0,	$a0,	0x0008
 		move	$a1,	$v1
-		li	$a2,	0x0008
-		li	$a3,	0x215
+		li	$a2,	0x0800
+		li	$a3,	0x316
+		jal	init_normal_line
+
+		# jump 6 right and print 1
+		move	$a0,	$v0
+		addi	$a0,	$a0,	0x0030
+		move	$a1,	$v1
+		li	$a3,	0x431
 		jal	init_normal_line
 		
-		# go 2 for the right and 2 for the top
+		# go 7 for the bottom
 		move	$a0,	$v0
-		addi	$a0,	$a0,	0x0010
-		subi	$a0,	$a0,	0x1000
+		addi	$a0,	$a0,	0x0800
+		move	$a1,	$v1
+		li	$a2,	-0x0008
+		li	$a3,	0x416
+		jal	init_normal_line
+
+		# jump 6 down and print 1
+		move	$a0,	$v0
+		addi	$a0,	$a0,	0x3000
+		move	$a1,	$v1
+		li	$a3,	0x131
+		jal	init_normal_line
+		
+		# go 8 for the bottom
+		move	$a0,	$v0
+		subi	$a0,	$a0,	0x0008
 		move	$a1,	$v1
 		li	$a2,	-0x0800
-		li	$a3,	0x315
+		li	$a3,	0x116
 		jal	init_normal_line
+
+		jal	 entry_index
 		
-		# go 8 for the bottom
-		move	$a0,	$v0
-		addi	$a0,	$a0,	0x4000
-		move	$a1,	$v1
-		li	$a2,	0x0800
-		li	$a3,	0x115
-		jal	init_normal_line
+		jal 	create_crosspieces
 		
-		# go 8 for the bottom
-		move	$a0,	$v0
-		addi	$a0,	$a0,	0x0010
-		subi	$a0,	$a0,	0x3000
-		move	$a1,	$v1
-		li	$a2,	0x0008
-		li	$a3,	0x415
-		jal	init_normal_line
-		
+		jal	draw_reserve_zones
+		jal	players_numbers
+		jal	center_board
+
 		# get return address and go back
 		lw	$ra,	($sp)
 		addi	$sp,	$sp,	4
-			
+		
 		jr	$ra
+		

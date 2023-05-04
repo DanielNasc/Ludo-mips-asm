@@ -37,7 +37,6 @@ Each Cells contains the following information:
   * `amount` - the amount of pieces in the cell
   * `team` - the team the pieces belong to
   * `cell type` - the type of cell
-    - `empty` - the cell is empty
     - `normal` - the cell is a normal cell
     - `goal` - the cell is a goal cell
     - `victory zone` - the cell is a victory zone cell

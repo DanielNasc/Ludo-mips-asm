@@ -164,7 +164,7 @@
 		sw	$a1,	8($sp)
 		
 		addi	$a1,	$a1,	0x0602	
-		
+
 		li	$a2,	5		# width
 		li	$a3,	1		# height
 		jal	rect
@@ -371,7 +371,6 @@
 		lw	$ra,	($sp)
 		addi	$sp,	$sp,	8
 		jr	$ra
-	
 	
 	draw_one:
 	# draws the dice with only 1 rectangle
@@ -741,6 +740,7 @@
 		addi	$sp,	$sp,	4
 		jr	$ra
 		
+	.globl players_numbers
 	players_numbers:
 		subi	$sp,	$sp,	4
 		sw	$ra,	($sp)
@@ -1322,7 +1322,7 @@
 		# creating purple cells
 		li	$a0,	0xA467C3	# purple color
 		
-		addi	$a1,	$a1,	0x1800	# três casas no eixo y
+		addi	$a1,	$a1,	0x1800	# trï¿½s casas no eixo y
 		
 		li	$a2,	5
 		li	$a3,	0x0800
@@ -1333,8 +1333,7 @@
 		jal 	loop_add
 		
 		jal	 entry_index
-		
-		jal 	create_crosspieces
+		jal		create_crosspieces
 		
 		jal	draw_reserve_zones
 		jal	players_numbers
