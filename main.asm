@@ -8,8 +8,14 @@
 		jal 	background
 
 		jal	init_cells
-		jal 	create_pieces
+		jal create_pieces
 		jal	create_teams
+
+		move $a0,$v0
+		jal filter_team_number
+		jal filter_entrance
+		jal filter_goal_zone
+		jal filter_victory_zone
 		
 		# How to create a piece
 		li 	$a0,	0xC6224E	# color

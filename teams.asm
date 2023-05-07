@@ -20,13 +20,13 @@
 		init_teams:
 			move $t5, $t0		# team number
 			sll $t5, $t5, 7 	# team number in correct position in word
-			lw  $t6, ($t1)		# load entrance index
-			add $t5, $t5, $t6
+			lw  $t5, ($t1)		# load entrance index
 			sll $t5,$t5,	7	# entrance index in correct position in word
 			add $t5, $t5, $t2	# victory zone index
 			sll $t5, $t5, 7		# victory zone index in correct position in word
 			add $t5, $t5, $t3	# goal zone index
-			sll $t5, $t5, 2		# goal zone index in correct position in word
+			sll $t5, $t5, 	2	# goal zone index in correct position in word
+			# selected = 0
 			
 			sw	$t5,	($t4)		# store data
 			addi	$t4,	$t4,	4	# next team address
@@ -38,5 +38,78 @@
 			blt	$t0,	4,	init_teams	# branch if there is more teams to initialize
 			
 		jr	$ra
-
 	
+
+	.globl filter_team_number
+	filter_team_number:
+		# $a0 = team address in memory
+
+		# Load team data
+		lw	$t0,	($a0)		# load team
+
+		# Filter team number
+		# 2 bits from selected + 7 bits from goal zone + 7 bits from victory zone + 7 bits from entrance
+		srl $t0, $t0, 23 # 2 + 7 + 7 + 7 = 23 bits
+		andi $t0, $t0, 3
+
+		move $v0, $t0
+		jr $ra
+
+	.globl filter_entrance
+	filter_entrance:
+		# $a0 = team address in memory
+
+		# Load team data
+		lw	$t0,	($a0)		# load team
+
+		# Filter entrance
+		# 2 bits from selected + 7 bits from goal zone + 7 bits from victory zone
+		srl $t0, $t0, 16 	# 2 + 7 + 7 = 16 bits
+		andi $t0, $t0, 63 	# set all bits to 0 except the entrance bits
+
+		move $v0, $t0
+		jr $ra
+
+
+	.globl filter_victory_zone
+	filter_victory_zone:
+		# $a0 = team address in memory
+
+		# Load team data
+		lw	$t0,	($a0)		# load team
+
+		# Filter victory zone
+		# 2 bits from selected + 7 bits from goal zone
+		srl $t0, $t0, 9 	# 2 + 7 = 9 bits
+		andi $t0, $t0, 63 	# set all bits to 0 except the victory zone bits
+
+		move $v0, $t0
+		jr $ra
+
+	.globl filter_goal_zone
+	filter_goal_zone:
+		# $a0 = team address in memory
+
+		# Load team data
+		lw	$t0,	($a0)		# load team
+
+		# Filter goal zone
+		srl $t0, $t0, 2 	# 2 bits from selected
+		andi $t0, $t0, 63 	# set all bits to 0 except the goal zone bits
+
+		move $v0, $t0
+		jr $ra
+
+	.globl filter_selected
+	filter_selected:
+		# $a0 = team address in memory
+
+		# Load team data
+		lw	$t0,	($a0)		# load team
+
+		# Filter selected
+		andi $t0, $t0, 3 	# set all bits to 0 except the selected bits
+
+		move $v0, $t0
+		jr $ra
+
