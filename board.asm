@@ -1,5 +1,5 @@
 .data 
-	update_team_pos:	0x0000,	-0x50,	-0x5000,	0x0050
+	update_team_reserve_pos:	0x0000,	-0x50,	-0x5000,	0x0050
 .text
 	init_normal_line:
 		# a0 - start pos
@@ -27,9 +27,10 @@
 		srl	$a3,	$a3,	4
 		move	$s7,	$a3		# team
 		
-		
-		walk_init_cells:
-			sw	$s1,	($s2)
+		walk_init_cells:			
+			sll	$t1	$s7,	16
+			add	$t2,	$s1,	$t1
+			sw	$t2,	($s2)
 			
 			# a0 -> team
 			# a1 -> coord
@@ -99,12 +100,28 @@
 		li	$a3,	1
 		jal	init_normal_line
 		
-		# go right and go up 6 cells
+		# go right and go up 4 cells
 		move	$a0,	$v0
 		addi	$a0,	$a0,	0x0008
 		move	$a1,	$v1
 		li	$a2,	-0x0800
-		li	$a3,	6
+		li	$a3,	4
+		jal 	init_normal_line
+		
+		# go up and go up 1 entry cell
+		move	$a0,	$v0
+		subi	$a0,	$a0,	0x0800
+		move	$a1,	$v1
+		li	$a2,	-0x0800
+		li	$a3,	0x331
+		jal 	init_normal_line
+		
+		# go up and go up 1 cell
+		move	$a0,	$v0
+		subi	$a0,	$a0,	0x0800
+		move	$a1,	$v1
+		li	$a2,	-0x0800
+		li	$a3,	1
 		jal 	init_normal_line
 		
 		# go right and go two cells
@@ -131,12 +148,28 @@
 		li	$a3,	1
 		jal	init_normal_line
 		
-		# go down and go right 6 cells
+		# go down and go right 4 cells
 		move	$a0,	$v0
 		addi	$a0,	$a0,	0x0800
 		move	$a1,	$v1
 		li	$a2,	0x0008
-		li	$a3,	6
+		li	$a3,	4
+		jal 	init_normal_line
+		
+		# go right and go right 1 cell
+		move	$a0,	$v0
+		addi	$a0,	$a0,	0x0008
+		move	$a1,	$v1
+		li	$a2,	0x0008
+		li	$a3,	0x431
+		jal 	init_normal_line
+		
+		# go right and go right 1 cell
+		move	$a0,	$v0
+		addi	$a0,	$a0,	0x0008
+		move	$a1,	$v1
+		li	$a2,	0x0008
+		li	$a3,	1
 		jal 	init_normal_line
 
 		# go down and go two cells
@@ -163,12 +196,28 @@
 		li	$a3,	1
 		jal	init_normal_line
 
-		# go left and go down 6 cells
+		# go left and go down 4 cells
 		move	$a0,	$v0
 		subi	$a0,	$a0,	0x0008
 		move	$a1,	$v1
 		li	$a2,	0x0800
-		li	$a3,	6
+		li	$a3,	4
+		jal 	init_normal_line
+		
+		# go down and go down 1 entry cell
+		move	$a0,	$v0
+		addi	$a0,	$a0,	0x0800
+		move	$a1,	$v1
+		li	$a2,	0x0800
+		li	$a3,	0x131
+		jal 	init_normal_line
+		
+		# go down and go down 1 cell
+		move	$a0,	$v0
+		addi	$a0,	$a0,	0x0800
+		move	$a1,	$v1
+		li	$a2,	0x0800
+		li	$a3,	1
 		jal 	init_normal_line
 
 		# go left and go two cells
@@ -195,12 +244,28 @@
 		li	$a3,	1
 		jal	init_normal_line
 
-		# go up and go left 6 cells
+		# go up and go left 4 cells
 		move	$a0,	$v0
 		subi	$a0,	$a0,	0x0800
 		move	$a1,	$v1
 		li	$a2,	-0x0008
-		li	$a3,	6
+		li	$a3,	4
+		jal 	init_normal_line
+		
+		# go left and go left 1 entry cell
+		move	$a0,	$v0
+		subi	$a0,	$a0,	0x0008
+		move	$a1,	$v1
+		li	$a2,	-0x0008
+		li	$a3,	0x231
+		jal 	init_normal_line
+		
+		# go left and go left 1 cell
+		move	$a0,	$v0
+		subi	$a0,	$a0,	0x0008
+		move	$a1,	$v1
+		li	$a2,	-0x0008
+		li	$a3,	1
 		jal 	init_normal_line
 
 		# go one cell up
@@ -217,69 +282,42 @@
 		# a2 - update value
 		# a3 -	team type amount
 
-		# go right and down and go right 1
+		# go right and go right 6
 		move	$a0,	$v0
-		addi	$a0,	$a0,	0x0808
-		move	$a1,	$v1
-		li	$a2,	0x0008
-		li	$a3,	0x231
-		jal	init_normal_line
-		
-		# go up and go right 6
-		move	$a0,	$v0
-		subi	$a0,	$a0,	0x0800
+		addi	$a0,	$a0,	0x0008
 		move	$a1,	$v1
 		li	$a2,	0x0008
 		li	$a3,	0x216
 		jal	init_normal_line
 		
-		# jump 6 up and print 1
+		# jump 6 up, go right and go down 6	
 		move	$a0,	$v0
 		subi	$a0,	$a0,	0x3000
-		move	$a1,	$v1
-		li	$a3,	0x331
-		jal	init_normal_line
-
-		# go right and go down 6	
-		move	$a0,	$v0
 		addi	$a0,	$a0,	0x0008
 		move	$a1,	$v1
 		li	$a2,	0x0800
 		li	$a3,	0x316
 		jal	init_normal_line
 
-		# jump 6 right and print 1
+		# jump 6 right, go down and go left 6
 		move	$a0,	$v0
-		addi	$a0,	$a0,	0x0030
-		move	$a1,	$v1
-		li	$a3,	0x431
-		jal	init_normal_line
-		
-		# go 7 for the bottom
-		move	$a0,	$v0
-		addi	$a0,	$a0,	0x0800
+		addi	$a0,	$a0,	0x0830
 		move	$a1,	$v1
 		li	$a2,	-0x0008
 		li	$a3,	0x416
 		jal	init_normal_line
 
-		# jump 6 down and print 1
-		move	$a0,	$v0
-		addi	$a0,	$a0,	0x3000
-		move	$a1,	$v1
-		li	$a3,	0x131
-		jal	init_normal_line
-		
-		# go 8 for the bottom
+		# jump 6 down, go left and go 6 up
 		move	$a0,	$v0
 		subi	$a0,	$a0,	0x0008
+		addi	$a0,	$a0,	0x3000
 		move	$a1,	$v1
 		li	$a2,	-0x0800
 		li	$a3,	0x116
 		jal	init_normal_line
 		
 		li	$s0,	0x0012			# update x rate
-		la	$s2,	update_team_pos		# counter
+		la	$s2,	update_team_reserve_pos		# counter
 		move	$s3,	$v0	
 		addi	$s3,	$s3,	0x1820
 		move	$s4,	$v1
@@ -308,7 +346,7 @@
 			j		init_reserve
 			
 			jump_to_next:
-			bge	$s5,	4,	end_reserve
+			bge	$s5,	4,	end_reserve	
 			subi	$s3,	$s3,	0x1000
 			add	$s2,	$s2,	4
 			lw	$t3,	($s2)
