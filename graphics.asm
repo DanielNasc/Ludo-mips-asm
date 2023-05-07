@@ -3,6 +3,7 @@
 	pixels_per_block_shift:	.word	2	# shift 2 places (multiply by 4)
 	dark_colors:		.word	0x6A448A, 0x1C2153, 0xC6224E, 0xC72D1E
 	normal_colors:		.word	0xF4FBF8, 0xA467C3, 0x2D4280, 0xF84284, 0xE8931F
+	start_pos:			.word	0x3403
 .text
 	.globl rect
 	rect:
@@ -165,8 +166,8 @@
 		
 		addi	$a1,	$a1,	0x0602	
 
-		li	$a2,	5		# width
-		li	$a3,	1		# height
+		li	$a2,	5	# width
+		li	$a3,	1	# height
 		jal	rect
 		
 		beq	$a0,	0x6A448A,	set_purple_color

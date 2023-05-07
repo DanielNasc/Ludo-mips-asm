@@ -1,17 +1,13 @@
-.data
-	msg:	.asciiz	"\nHello, Ludo!\n"
-	
+.data	
 	pos:	.word	0
 .text
 	.globl main
 	main:
 		# 256 x 128 cells (2x2 pixels)
 		jal 	background
-		#jal 	board
 
 		jal	init_cells
 		jal 	create_pieces
-	
 		
 		# How to create a piece
 		li 	$a0,	0xC6224E	# color
@@ -56,5 +52,6 @@
 		
 		jal	update_pos
 	
+		end:
 		li	$v0,	10
 		syscall

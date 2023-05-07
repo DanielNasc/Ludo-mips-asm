@@ -1,10 +1,11 @@
+
 .text
 	.globl create_pieces
 	create_pieces:
 				
 		# Each piece contains the following information:
 	
-		#   * `coords` - the coordinates of the piece
+		#   * `pos` - the coordinates of the piece in the cells array
 		#   * `team` - the team the piece belongs to
 		#   * `status` - the status of the piece
 		#     - `dead` - the piece is dead
@@ -20,18 +21,18 @@
 
 
 		# With this information, we can represent the piece as a 32-bit word.
-		# From less significant to most significant bits:
-
-		#     * 7 bits for X coordinate -> 128 possible values between 0 and 127
-		#     * 7 bits for Y coordinate -> 128 possible values between 0 and 127
+		# From less significant to most significant bits: 
+		
+		#     * 7 bits for pos
 		#     * 2 bits for team -> 4 possible values between 0 and 3 
 		#     * 3 bits for status -> 8 possible values between 0 and 7
 		#     * 13 bits unused -> 8192 possible values between 0 and 8191
-	
-	
+
 		# Store return addresss on stack
 		subi	$sp,	$sp,	4
 		sw	$ra,	($sp)
+	
+		move	$t0,	$a0
 	
 		# Allocate Memory
 		li	$a0,	64	# 16 pieces * 4 bytes/piece
@@ -39,18 +40,23 @@
 		syscall
 		
 		# Update data of each piece
-		move	$t0,	$v0	# first piece address
-		li	$t1,	0	# COLOR/TEAM: 0 - 3
-		li	$t2,	0	# pieces_counter
 		
+		move	$t0,	$v0		# first piece address
+		li	$t1,	0		# COLOR/TEAM: 0 - 3
+		li	$t2,	0		# pieces_counter
+		li	$t3,	80		# pieces_pos in cells array
+
 		init_pieces:
+
 			# update team
-			add	$t3,	$zero,	$t1	# load team number
-			sll	$t3,	$t3,	16	# put the team bits in the correct position (shift 16 times)
-			sw	$t3,	($t0)		# update value in memory
-			
-			addi	$t0,	$t0,	4	# next piece address
-			addi	$t2,	$t2,	1	# pieces_counter++ 
+			add	$t4,	$zero,	$t1	# load team number
+			sll	$t4,	$t4,	8	# put the team bits in the correct position (shift 8 times)
+
+			sw	$t4,	($t0)			# update value in memory
+
+			addi	$t0,	$t0,	4		# next piece address
+			addi	$t2,	$t2,	1		# pieces_counter++ 
+			addi	$t3,	$t3,	1		# pieces_pos++
 			
 			# go to init_pieces again if t3 < 4 pieces and init next piece 
 			blt	$t2,	4,	init_pieces
@@ -67,7 +73,4 @@
 			addi	$sp,	$sp,	4
 			
 			jr	$ra
-			
-			
-			
-			
+
