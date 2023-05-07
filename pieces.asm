@@ -13,20 +13,6 @@
 		#     - `in reserve` - the piece is in reserve
 		#     - `in victory zone` - the piece is in the victory zone
 		#     - `in goal` - the piece is in the goal
-		#	
-		
-		# As the game board is a 128x128 matrix, X and Y can be represented by a number between 0 and 127 (0 - 0x7F).
-		# The `team` is represented by a number between 0 and 3 (0 - 0x03) or 2 bits.
-		# The `status` is represented by a number between 0 and 4 (0 - 0x04) or 3 bits.
-
-
-		# With this information, we can represent the piece as a 32-bit word.
-		# From less significant to most significant bits: 
-		
-		#     * 7 bits for pos
-		#     * 2 bits for team -> 4 possible values between 0 and 3 
-		#     * 3 bits for status -> 8 possible values between 0 and 7
-		#     * 13 bits unused -> 8192 possible values between 0 and 8191
 
 		# Store return addresss on stack
 		subi	$sp,	$sp,	4
@@ -47,10 +33,12 @@
 		li	$t3,	80		# pieces_pos in cells array
 
 		init_pieces:
-
 			# update team
-			add	$t4,	$zero,	$t1	# load team number
-			sll	$t4,	$t4,	8	# put the team bits in the correct position (shift 8 times)
+			move	$t4,	$t1	# load team number	
+			sll	$t4,	$t4,	7	# team bits in the correct position
+			add $t4,	$t4,	$t3	# add pos to team bits
+			sll $t4,	$t4,	3	# team bits in the correct position
+			add $t4,	$t4,	$zero	# add status bits
 
 			sw	$t4,	($t0)			# update value in memory
 
@@ -74,3 +62,49 @@
 			
 			jr	$ra
 
+	.globl filter_piece_team
+	filter_piece_team:
+		# $a0 - piece address
+
+		# Load piece value
+		lw	$t0,	($a0)
+
+		# Filter team bits
+		srl	$t0,	$t0,	10	# shift right 10 bits
+		andi	$t0,	$t0,	0x03	# filter team bits
+
+		# Return team value
+		move	$v0,	$t0
+
+		jr	$ra
+
+	.globl filter_piece_pos
+	filter_piece_pos:
+		# $a0 - piece address
+
+		# Load piece value
+		lw	$t0,	($a0)
+
+		# Filter pos bits
+		srl $t0,	$t0,	3	# shift right 7 bits
+		andi	$t0,	$t0,	0x7F	# filter pos bits
+
+		# Return pos value
+		move	$v0,	$t0
+
+		jr	$ra
+
+
+	.globl filter_piece_status
+	filter_piece_status:
+		# $a0 - piece address
+
+		# Load piece value
+		lw	$t0,	($a0)
+
+		# Filter status bits
+		andi $t0,	$t0,	0x07	# filter status bits
+
+		# Return status value
+		move	$v0,	$t0
+		jr	$ra

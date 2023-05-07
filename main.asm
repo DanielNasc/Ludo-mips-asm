@@ -8,7 +8,14 @@
 		jal 	background
 
 		jal	init_cells
+
 		jal create_pieces
+
+		move $a0,	$v0
+		jal filter_piece_team
+		jal filter_piece_pos
+		jal filter_piece_status
+
 		jal	create_teams
 
 		move $a0,$v0
