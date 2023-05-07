@@ -1,4 +1,5 @@
 .data	
+#k	initial_pos	.word	
 	pos:	.word	0
 .text
 	.globl main
@@ -8,6 +9,7 @@
 
 		jal	init_cells
 		jal 	create_pieces
+		jal	create_teams
 		
 		# How to create a piece
 		li 	$a0,	0xC6224E	# color
