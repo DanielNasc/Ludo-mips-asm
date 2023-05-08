@@ -1,21 +1,16 @@
 .data
 	entrances_index: .word	39, 53, 11, 25
+	teams: .word 0, 0, 0, 0
 .text
 	.globl create_teams
 	create_teams:
 		
 		# Team Format: [Team Number, Entrance Index, Victory Zone Index, Goal Zone Index, Selected]
-
-		# Allocate Memory
-		li	$a0,	16	# 4 teams * 4 addresses/team
-		li	$v0,	9
-		syscall
-		
 		li	$t0,	0		# teams counter
 		la	$t1,	entrances_index
 		li	$t2,	56		# victory zone index in cell array		
 		li	$t3,	61		# goal zone index in cell array
-		move	$t4,	$v0 	# teams adresses
+		la	$t4,	teams		# teams address in memory
 		
 		init_teams:
 			move $t5, $t0		# team number
