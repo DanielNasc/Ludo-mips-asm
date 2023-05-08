@@ -37,3 +37,13 @@ Each team contains the following information:
   * `victory zone` - the victory zone cell of the team
   * `goal` - the goal cell of the team
   * `selected` - the selected piece of the teasm
+
+#### Player
+
+Each player contains the following information:
+
+  * `team` - the team number of the player
+  * `status` - the status of the player
+    - `in game` - the player is in game
+    - `winner` - the player is the winner
+    - `blocked` - the player is blocked

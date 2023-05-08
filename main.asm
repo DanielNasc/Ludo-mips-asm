@@ -11,13 +11,9 @@
 
 		jal create_pieces
 		jal	create_teams
-		
-		move $a0, $v0
-		li $a1, 2
-		jal set_selected
-		jal filter_cell_team
-		jal filter_cell_type
-		jal filter_cell_pos
+			
+		move $a0,	$v0
+		jal select_
 				
 		jal	dice
 		

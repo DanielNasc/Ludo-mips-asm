@@ -27,6 +27,12 @@
 		andi	$s6,	$t0,	0xF	# type
 		srl	$t0,	$t0,	4
 		move	$s7,	$t0		# team
+
+		move	$s5,	$s7
+		sll 	$s5,	$s5,	4
+		add		$s5,	$s6,	$s5
+		sll		$s5,	$s5,	2
+		# Now s5 contains type, team and amount (pieces)
 		
 		walk_init_cells:
 			sll	$t1,	$s5,	16
@@ -379,7 +385,7 @@
 
 		lw	$t0,	($a0)
 
-		srl $t0,	$t0,	20
+		srl $t0,	$t0,	22
 		andi	$t0,	$t0,	0xF
 
 		# return
@@ -393,8 +399,22 @@
 
 		lw	$t0,	($a0)
 
-		srl $t0,	$t0,	16
+		srl $t0,	$t0,	18
 		andi	$t0,	$t0,	0x0F
+
+		# return
+		move $v0,	$t0
+		jr	$ra
+
+	
+	.globl filter_cell_amount
+	filter_cell_amount:
+		# a0 - cell address
+
+		lw	$t0,	($a0)
+
+		srl $t0,	$t0,	16
+		andi $t0,	$t0,	0x03
 
 		# return
 		move $v0,	$t0
@@ -414,3 +434,65 @@
 		# return
 		move $v0,	$t0
 		jr	$ra
+
+
+	.globl walk_cells
+	walk_cells:
+		# a0 - cell address
+		# a1 - cell pos
+		# a2 - how many cells to walk
+		# a3 - team
+
+		li $s0, 0 # counter
+		move $s1, $a0 # first cell address
+		move $s2, $a1 # index in cells array
+		move $s3, $a2 # how many cells to walk
+
+		loop_walk_cells:
+			beq $s0, $s3, end_walk_cells
+			
+			# victory zone -> can overflow
+			jal filter_cell_type
+			sne $t0, $v0, 0x01
+			beq $t0, $zero, end_walk_cells
+			sne $t0, $v0, 0x03
+			beq $t0, $zero, end_walk_cells
+
+			sll $t0, $s2, 2 # index in cells array * 4 = offset
+			add $s4, $t0, $s1	# cell address + offset
+			lw $s5, ($s4) # cell value
+
+			move $a0, $s5 
+			# if amount > 1 and team != a3, then cannot walk
+			jal filter_cell_amount
+			sgt $s6, $v0, 1 # if amount > 1
+			move $a0, $s5
+			jal filter_cell_team
+			sne $t1, $v0, $a3 # if team != a3
+			and $t0, $s6, $t1 # if amount > 1 and team != a3
+			bne $t0, $zero, cannot_walk
+			
+			# go to next cell
+			# if overflow, the normal cells back to the first cell
+			addi $s0, $s0, 1
+			addi $s2, $s2, 1
+
+			# if overflow and the piece is not in the victory zone, then reset the index
+			slti $t2, $s2, 56
+			bne $t2, $zero, loop_walk_cells
+			jal filter_cell_type
+			sne $t0, $v0, 0x01
+			beq $t0, $zero, end_walk_cells
+			sne $t0, $v0, 0x03
+			beq $t0, $zero, end_walk_cells
+			subi $s2, $s2, 56
+
+			j loop_walk_cells
+
+		end_walk_cells:
+			li	$v0,	1
+			jr	$ra
+
+		cannot_walk:
+			li	$v0,	0
+			jr	$ra			
