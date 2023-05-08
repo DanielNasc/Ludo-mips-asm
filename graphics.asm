@@ -85,7 +85,16 @@
 		sw	$a1,	8($sp)		# coordinate
 		sw	$a2,	12($sp)		# type
 		sw	$a3,	16($sp)		# amount
-	
+		
+		blt	$a2,	4,	with_edge
+		addi 	$a1,	$a1,	0x101
+		li	$a0,	0xF4FBF8
+		li	$a2,	7		# width
+		li	$a3,	7		# height
+		jal	rect
+		j	not_crosspiece
+		
+		with_edge:
 		li	$a0,	0x111426	# dark color
 		li	$a2,	9		# width
 		li	$a3,	9		# height
@@ -95,7 +104,7 @@
 		lw	$a1,	8($sp)		# coordinate
 		lw	$a2,	12($sp)		# type
 		lw	$a3,	16($sp)		# amount
-
+		
 		andi	$t0,	$a2,	1
 		la	$t1,	normal_colors
 		beqz	$t0,	not_colorful
@@ -122,6 +131,7 @@
 		lw	$a3,	16($sp)		# amount
 		
 		beqz	$a3,	end_cell
+		bgt	$a3,	1,	more_than_one
 		
 		subi	$a0,	$a0,	1
 		la	$t0,	dark_colors	
@@ -130,6 +140,12 @@
 		lw	$a0,	($a0)
 		
 		jal	one_piece
+		j	end_cell
+		
+		more_than_one:
+		lw	$a0,	($t1)		# color
+		lw	$a1,	8($sp)		# coordinate
+		jal more_pieces
 		
 		end_cell:
 		lw	$ra,	($sp)
@@ -157,6 +173,23 @@
 		addi	$sp,	$sp,	12
 		jr	$ra	
 			
+	.globl	selected
+	selected:
+		subi	$sp,	$sp,	8
+		sw	$ra,	($sp)
+		sw	$a1,	4($sp)	# coord cell
+		
+		addi 	$a1,	$a1,	0x101
+		li	$a0,	0x80F3B5	# green color
+		li	$a2,	7		# width
+		li	$a3,	7		# height
+		jal	rect
+		
+		lw	$ra,	($sp)
+		lw	$a1,	4($sp)
+		addi	$sp,	$sp,	8
+		jr	$ra
+		
 	.globl 	one_piece
 	one_piece:
 		subi	$sp,	$sp, 	12
@@ -218,69 +251,70 @@
 		jr	$ra
 	
 	draw_small_piece_1:
-		subi	$sp,	$sp,	8
+		subi	$sp,	$sp, 	12
 		sw	$ra,	($sp)
-		sw	$a1,	4($sp)
+		sw	$a0,	4($sp)
+		sw	$a1,	8($sp)
 		
 		# piece 1
-		li	$a0,	0xE8931F
 		jal	small_piece
 		
 		lw	$ra,	($sp)
 		lw	$a1,	4($sp)
-		addi	$sp,	$sp,	8
+		addi	$sp,	$sp,	12
 		jr	$ra
 		
 	draw_small_piece_2:
-		subi	$sp,	$sp,	8
+		subi	$sp,	$sp, 	12
 		sw	$ra,	($sp)
-		sw	$a1,	4($sp)
+		sw	$a0,	4($sp)
+		sw	$a1,	8($sp)
 		
 		# piece 2
-		li	$a0,	0xF84284
 		addi	$a1,	$a1,	0x0303	
 		jal small_piece
 		
 		lw	$ra,	($sp)
 		lw	$a1,	4($sp)
-		addi	$sp,	$sp,	8
+		addi	$sp,	$sp,	12
 		jr	$ra
 	
 	draw_small_piece_3:
-		subi	$sp,	$sp,	8
+		subi	$sp,	$sp, 	12
 		sw	$ra,	($sp)
-		sw	$a1,	4($sp)
+		sw	$a0,	4($sp)
+		sw	$a1,	8($sp)
 		
 		# piece 3
-		li	$a0,	0xC6224E
 		addi	$a1,	$a1,	0x0300	
 		jal small_piece
 	
 		lw	$ra,	($sp)
 		lw	$a1,	4($sp)
-		addi	$sp,	$sp,	8
+		addi	$sp,	$sp,	12
 		jr	$ra
 	
 	draw_small_piece_4:
-		subi	$sp,	$sp,	8
+		subi	$sp,	$sp, 	12
 		sw	$ra,	($sp)
-		sw	$a1,	4($sp)
+		sw	$a0,	4($sp)
+		sw	$a1,	8($sp)
 		
 		# piece 4
-		li	$a0,	0x2D4280
 		addi	$a1,	$a1,	0x0003
 		jal small_piece
 		
 		lw	$ra,	($sp)
 		lw	$a1,	4($sp)
-		addi	$sp,	$sp,	8
+		addi	$sp,	$sp,	12
 		jr	$ra
 		
 	.globl 	more_pieces
 	more_pieces:
 		subi	$sp,	$sp, 	12
 		sw	$ra,	($sp)
-		sw	$a1,	4($sp)
+		sw	$a0,	4($sp)
+		sw	$a1,	8($sp)
 		
 		addi	$a1,	$a1,	0x0201	
 		
@@ -295,10 +329,7 @@
 			call_draw_small_piece_2:
 				jal 	draw_small_piece_2
 				jal	draw_small_piece_1
-			
-			
-			
-	
+		
 		lw	$ra,	($sp)
 		addi	$sp,	$sp,	12
 		jr	$ra
@@ -750,7 +781,7 @@
 		li	$a1,	0x3403		# based on the coordinates of the first pixel used to draw the board.
 		
 		# drawing number 1
-		addi	$a1,	$a1,	0x3264	# goes to the coordinate where the number will be printed
+		addi	$a1,	$a1,	0x3265	# goes to the coordinate where the number will be printed
 		li	$a2,	1
 		li	$a3,	5
 		jal	rect
@@ -767,7 +798,7 @@
 		jal	rect
 		
 		# drawing number 2
-		li	$a1,	0x3403		# based on the coordinates of the first pixel used to draw the board.
+		li	$a1,	0x3404		# based on the coordinates of the first pixel used to draw the board.
 		
 		addi	$a1,	$a1,	0x3213
 		li	$a2,	3
@@ -798,7 +829,7 @@
 		# drawing number 3
 		li	$a1,	0x3403		# based on the coordinates of the first pixel used to draw the board.
 		
-		addi	$a1,	$a1,	0x0013
+		addi	$a1,	$a1,	0x0014
 		subi	$a1,	$a1,	0x1e00
 		li	$a2,	3
 		li	$a3,	1
@@ -823,7 +854,7 @@
 		# drawing number 4
 		li	$a1,	0x3403		# based on the coordinates of the first pixel used to draw the board.
 		
-		addi	$a1,	$a1,	0x0063
+		addi	$a1,	$a1,	0x0064
 		subi	$a1,	$a1,	0x1e00
 		li	$a2,	1
 		li	$a3,	3
@@ -965,22 +996,22 @@
 		
 		# drawing the purple reserve zone.
 		li	$a0,	0x6A448A	# dark purple color.
-		li	$a1,	0x5060		# coordinate + difference in y
+		li	$a1,	0x5061		# coordinate + difference in y
 		jal 	reserve_zone
 		
 		# drawing the blue reserve zone.
 		li	$a0,	0x1C2153	# dark blue color.
-		li	$a1,	0x5010		# coordinate + difference in y
+		li	$a1,	0x5011		# coordinate + difference in y
 		jal 	reserve_zone
 		
 		# drawing the pink reserve zone.
 		li	$a0,	0xC6224E	# dark pink color.
-		li	$a1,	0x0010
+		li	$a1,	0x0011
 		jal 	reserve_zone
 		
 		# drawing the orange reserve zone.
 		li	$a0,	0xC72D1E	# dark orange color.
-		li	$a1,	0x0060
+		li	$a1,	0x0061
 		jal 	reserve_zone
 		
 		lw	$ra,	($sp)
