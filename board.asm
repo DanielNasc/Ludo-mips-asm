@@ -75,7 +75,7 @@
 	.globl	init_cells
 	init_cells:
 		# Store return addresss on stack
-		subi	$sp,	$sp,	4
+		subi	$sp,	$sp,	8
 		sw	$ra,	($sp)
 	
 		# Allocate Memory
@@ -84,7 +84,8 @@
 		syscall
 		
 		# Update each cell
-		move	$t0,	$v0
+		sw 	$v0,	4($sp)
+		move $t0, $v0
 		
 		# Cells beetween 0 - 56 -> Normal
 		# a0 - start pos
@@ -375,6 +376,7 @@
 
 		# get return address and go back
 		lw	$ra,	($sp)
+		lw  $v0,   4($sp)
 		addi	$sp,	$sp,	4
 		
 		jr	$ra	

@@ -9,10 +9,22 @@
 
 		jal	init_cells
 
+		subi $sp, $sp, 4
+		sw $v0, ($sp)	# save cells address
+
 		jal create_pieces
+
+		subi $sp, $sp, 4
+		sw $v0, ($sp)	# save pieces address
+
 		jal	create_teams
-			
+
+		# $a0 = team address
+        # $a1 = cells address
+        # $a2 = pieces address
 		move $a0,	$v0
+		lw $a1, 4($sp)
+		lw $a2, ($sp)
 		jal select_
 				
 		jal	dice

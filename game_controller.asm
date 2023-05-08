@@ -3,9 +3,15 @@
 .text
     .globl select_
     select_:
-        subi $sp, $sp, 8 # allocate space for $ra and $s0
-        sw $ra, 4($sp) # save $ra
-        sw $s0, 0($sp) # save $s0
+        # $a0 = team address
+        # $a1 = cells address
+        # $a2 = pieces address
+
+        subi $sp, $sp, 16 # allocate space for $ra, a0, a1 a2
+        sw $ra, 12($sp) # save $ra
+        sw $a0, 8($sp) # save $a0
+        sw $a1, 4($sp) # save $a1
+        sw $a2, 0($sp) # save $a2
 
         # $a0 = team address
         
@@ -43,7 +49,7 @@
             beq $v0, 97, select_previous
 
             # if the character is 's', Select the next piece
-            beq $v0, 115, select_next
+            #beq $v0, 115, select_next
 
             j select_loop
 
@@ -51,8 +57,7 @@
                 # $s0 = team number
                 # $s1 = selected number
 
-                lw $ra, 4($sp) # restore $ra
-                lw $s0, 0($sp) # restore $s0
+                lw $ra, 12($sp) # restore $ra
 
                 jr $ra
             
@@ -60,22 +65,32 @@
                 beqz $s1, reset_selected_max
                 addi $s1, $s1, -1
 
-                move $a1, $s1 # $a1 = selected number
-                jal set_selected
-
                 # check if the piece can move
                 sll $t0, $s1, 2
                 add $s3, $s2, $t0 # $s3 = can move address
                 lw $t1, 0($s3) # $t1 = can move
                 beq $t1, 0, select_previous
 
+                move $a0,   $s0 # $a0 = team numbr
+                move $a1,   $s1 # $a1 = selected number
+                lw $a2, 4($sp) # $a2 = cells address
+                lw $a3, 0($sp) # $a3 = pieces address
+
+                jal select_cell
+
                 j select_loop
 
                 reset_selected_max:
                     li $s1, 3
 
-                    move $a1, $s1 # $a1 = selected number
-                    jal set_selected
+                    # move $a0,   $s0 # $a0 = team numbr    
+                    # move $a1,   $s1 # $a1 = selected number
+                    # lw $a2, 4($sp) # $a2 = cells address
+                    # lw $a3, 0($sp) # $a3 = pieces address
+
+                    # $a0 = team address in memory
+		            # $a1 = selected value
+                    lw $a0, 8($sp) # $a0 = team address
 
                     # check if the piece can move
                     sll $t0, $s1, 2
@@ -83,14 +98,22 @@
                     lw $t1, 0($s3) # $t1 = can move
                     beq $t1, 0, select_previous
 
+                    move $a1, $s1 # $a1 = selected number
+                    jal set_selected
+
+                    move $a0,   $s0 # $a0 = team numbr
+                    move $a1,   $s1 # $a1 = selected number
+                    lw $a2, 4($sp) # $a2 = cells address
+                    lw $a3, 0($sp) # $a3 = pieces address
+
+                    jal select_cell
+
                     j select_loop
 
             select_next:
                 beq $s1, 3, reset_selected_min
                 addi $s1, $s1, 1
 
-                move $a1, $s1 # $a1 = selected number
-                jal set_selected
 
                 # check if the piece can move
                 sll $t0, $s1, 2
@@ -98,13 +121,21 @@
                 lw $t1, 0($s3) # $t1 = can move
                 beq $t1, 0, select_next
 
+                move $a0,   $s0 # $a0 = team numbr
+                move $a1, $s1 # $a1 = selected number
+                jal set_selected
+
+                move $a0,   $s0 # $a0 = team numbr
+                move $a1,   $s1 # $a1 = selected number
+                lw $a2, 4($sp) # $a2 = cells address
+                lw $a3, 0($sp) # $a3 = pieces address
+
+                jal select_cell
+
                 j select_loop
 
                 reset_selected_min:
                     li $s1, 0
-
-                    move $a1, $s1 # $a1 = selected number
-                    jal set_selected
 
                     # check if the piece can move
                     sll $t0, $s1, 2
@@ -112,7 +143,82 @@
                     lw $t1, 0($s3) # $t1 = can move
                     beq $t1, 0, select_next
 
+                    move $a1, $s1 # $a1 = selected number
+                    jal set_selected
+
+                    move $a0,   $s0 # $a0 = team numbr
+                    move $a1,   $s1 # $a1 = selected number
+                    lw $a2, 4($sp) # $a2 = cells address
+                    lw $a3, 0($sp) # $a3 = pieces address
+
+                    jal select_cell
+
                     j select_loop
+
+    select_cell:        
+        # $a0 = team number
+        # $a1 = selected number
+        # $a2 = cells address
+        # $a3 = pieces address
+
+        subi $sp, $sp, 8 # allocate space for $ra and $s0
+        sw $ra, 4($sp) # save $ra
+        sw $s0, 0($sp) # save $s0
+
+        # Get position of the selected piece in cells
+        sll $t0, $a0, 6
+        add $t1, $a3, $t0 # $t1 = first piece of the team
+        sll $t2, $a1, 2 # $t2 = selected number * 4
+        add $a0, $t1, $t2 # $a0 = selected piece
+
+        jal filter_piece_pos
+
+        move $t0, $v0 # $t0 = piece position in cells array
+        sll $t0, $t0, 2 # $t0 = piece position * 4
+        add $a0, $a2, $t0 # $a0 = selected cell
+
+        jal filter_cell_pos
+
+        move $a1, $v0 # $a1 = cell position
+
+        jal selected
+
+        lw $ra, 4($sp) # restore $ra
+        lw $s0, 0($sp) # restore $s0
+        addi $sp, $sp, 8 # deallocate space for $ra and $s0
+
+        jr $ra
+        # $a0 = team number
+        # $a1 = selected number
+        # $a2 = cells address
+        # $a3 = pieces address
+
+        subi $sp, $sp, 8 # allocate space for $ra and $s0
+        sw $ra, 4($sp) # save $ra
+        sw $s0, 0($sp) # save $s0
+
+        # Get cell position
+        sll $t0, $a0, 6
+        add $s0, $a3, $t0 # $s0 = first piece of the team
+        sll $t1, $a1, 2 # $t0 = selected number * 4
+        # filter piece position in the cells array
+        jal filter_piece_pos
+        move $s1, $v0 # $s1 = piece position
+        sll $t0, $s1, 2 # $t0 = piece position * 4
+        add $a0, $a2, $t0  # $a0 = cell address
+        # filter cell position
+        jal filter_cell_pos
+        
+        move $a1, $v0 # $s2 = cell position
+
+        jal selected
+
+        lw $ra, 4($sp) # restore $ra
+        lw $s0, 0($sp) # restore $s0
+        addi $sp, $sp, 8 # deallocate space for $ra and $s0
+
+        jr $ra
+
 
     .globl check_if_can_move
     check_if_can_move:
