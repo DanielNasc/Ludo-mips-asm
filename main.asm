@@ -15,7 +15,10 @@
 		move $a0, $v0
 		li $a1, 2
 		jal set_selected
-		
+		jal filter_cell_team
+		jal filter_cell_type
+		jal filter_cell_pos
+				
 		jal	dice
 		
 		jal	roll_die

@@ -22,13 +22,14 @@
 		move	$s2,	$a1		# memory address
 		move	$s3,	$a2		# update value
 		andi	$s4,	$a3, 	0xF	# amount (cells)
-		srl	$a3,	$a3,	4	
-		andi	$s6,	$a3,	0xF	# type
-		srl	$a3,	$a3,	4
-		move	$s7,	$a3		# team
+		move 	$t0,	$a3
+		srl	$t0,	$t0,	4
+		andi	$s6,	$t0,	0xF	# type
+		srl	$t0,	$t0,	4
+		move	$s7,	$t0		# team
 		
-		walk_init_cells:			
-			sll	$t1	$s7,	16
+		walk_init_cells:
+			sll	$t1,	$s5,	16
 			add	$t2,	$s1,	$t1
 			sw	$t2,	($s2)
 			
@@ -370,5 +371,46 @@
 		lw	$ra,	($sp)
 		addi	$sp,	$sp,	4
 		
-		jr	$ra
+		jr	$ra	
 		
+	.globl filter_cell_team
+	filter_cell_team:
+		# a0 - cell address
+
+		lw	$t0,	($a0)
+
+		srl $t0,	$t0,	20
+		andi	$t0,	$t0,	0xF
+
+		# return
+		move $v0,	$t0
+		jr	$ra
+
+	
+	.globl filter_cell_type
+	filter_cell_type:
+		# a0 - cell address
+
+		lw	$t0,	($a0)
+
+		srl $t0,	$t0,	16
+		andi	$t0,	$t0,	0x0F
+
+		# return
+		move $v0,	$t0
+		jr	$ra
+
+	# .globl filter_cell_team
+	# filter_cell_team
+
+	.globl filter_cell_pos
+	filter_cell_pos:
+		# a0 - cell address
+
+		lw	$t0,	($a0)
+
+		andi	$t0,	$t0,	0xFFFF
+
+		# return
+		move $v0,	$t0
+		jr	$ra
