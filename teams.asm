@@ -113,3 +113,27 @@
 		move $v0, $t0
 		jr $ra
 
+	.globl set_selected
+	set_selected:
+		# $a0 = team address in memory
+		# $a1 = selected value
+
+		# Load team data
+		lw	$t0,	($a0)		# load team
+
+		# Check if the param is between 0 and 3
+		li $t1, 3
+		blt $a1, $zero, end_set_selected
+		bgt $a1, $t1, end_set_selected
+
+		# Selected is the 2 least significant bits
+		# Clear the selected bits
+		andi $t0, $t0, 0xFFFFFFFC
+		# Set the selected bits
+		or $t0, $t0, $a1
+
+		# Store team data
+		sw $t0, ($a0)		# store team data
+
+		end_set_selected:
+		jr $ra
